@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portal Berita Lokal
 
-## Getting Started
+**Status:** `Development`
 
-First, run the development server:
+**Terakhir di update:** `26 Oktober 2024`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Deskripsi:** Portal Berita Lokal adalah platform berbasis web yang dirancang untuk membantu masyarakat menemukan berita lokal yang relevan dan akurat sesuai dengan lokasi mereka. Dengan tujuan memberikan akses informasi yang lebih baik, portal ini memungkinkan pengguna untuk mencari berita berdasarkan wilayah mereka dan berkontribusi dalam pembuatan konten berita. Setiap berita yang dikirimkan akan melalui proses validasi oleh admin sebelum dipublikasikan, memastikan hanya berita yang terverifikasi yang akan muncul di portal.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Teknologi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Bahasa Pemrograman**: `TypeScript`
+- **Framework**: `Next.js`
+- **Database**: `MongoDB`
+- **API**: `RESTful API`
+- **Frontend**: `React, TailwindCSS`
+- **Backend**: `Node.js`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Fitur Utama
 
-## Learn More
+- **Pencarian Berita Berdasarkan Lokasi**: Pengguna dapat mencari berita yang relevan sesuai lokasi mereka, memastikan akses informasi yang tepat dan personal.
+- **Pengiriman Berita oleh Pengguna**: Masyarakat dapat berkontribusi dengan mengirimkan berita mereka sendiri, yang akan menjadi bagian dari portal.
 
-To learn more about Next.js, take a look at the following resources:
+- **Sistem Moderasi**: Setiap berita yang dikirimkan akan diperiksa oleh admin sebelum dipublikasikan, menjaga kualitas dan keakuratan informasi.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Personalisasi Pengalaman Pengguna**: Portal ini menawarkan rekomendasi berita berdasarkan minat pengguna serta sistem rating dan ulasan untuk meningkatkan interaksi.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Laporkan Berita**: Fitur ini memungkinkan pengguna untuk melaporkan berita yang dianggap tidak akurat atau berpotensi menyesatkan, menjaga keamanan informasi di portal.
 
-## Deploy on Vercel
+- **Peningkatan Keterlibatan Komunitas**: Dengan memberikan platform untuk berbagi berita, diharapkan masyarakat dapat berperan aktif dalam jurnalisme lokal.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tujuan Proyek
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyek ini bertujuan untuk menciptakan sistem portal berita lokal berbasis web yang tidak hanya menjaga akurasi dan kualitas berita, tetapi juga memberikan pengalaman pengguna yang interaktif dan personal. Dengan meningkatkan kesadaran publik dan mendorong partisipasi aktif dalam jurnalisme lokal, kami berharap portal ini dapat menjadi sumber informasi yang terpercaya bagi masyarakat.

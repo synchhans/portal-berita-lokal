@@ -1,0 +1,105 @@
+### SIGNUP
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "name": "Muhamad Farhan", 
+  "email": "muhamadfarhan.inc@gmail.com", 
+  "password": "@MonkeyDDragon1", 
+  "preferences": {
+    "topics": ["politik", "teknologi"],
+    "location": {
+      "lat": -6.9175,
+      "long": 107.6191,
+      "city": "Bandung",
+      "province": "Jawa Barat",
+      "country": "Indonesia"
+    }
+  }
+}
+
+
+### SINGIN
+POST http://localhost:3000/api/signin
+Content-Type: application/json
+
+{
+    "email": "muhamadfarhan.inc@gmail.com",
+    "password": "@MonkeyDDragon1"
+}
+
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Mjk5MTY2NjAsImV4cCI6MTcyOTkyMDI2MH0.Tvo0X1sXsUEEC2AKyTkWPaG5Ij7ROLWvyx2m38Jd8tY
+Content-Type: application/json
+
+{
+  "title": "Paula Bantah Baim Wong: Berita Perselingkuhan itu tidak benar",
+  "content": "This is the content of the breaking news article.",
+  "location": {
+    "lat": -6.9204,
+    "long": 107.5754,
+    "city": "Cicalengka",
+    "province": "West Java",
+    "country": "Indonesia"
+  },
+  "category": "Entertainment",
+  "tags": ["news", "breaking", "cicalengka"]
+}
+
+
+### Get News Articles
+GET http://localhost:3000/api/news
+Content-Type: application/json
+
+### Get News Articles by title
+GET http://localhost:3000/api/news?title=Breaking+News+Title
+Content-Type: application/json
+
+### Get News Articles by category
+GET http://localhost:3000/api/news?category=Entertainment
+Content-Type: application/json
+
+### Get News Articles by status
+GET http://localhost:3000/api/news?status=approved
+Content-Type: application/json
+
+### Get News Articles by limit
+GET http://localhost:3000/api/news?limit=1
+Content-Type: application/json
+
+### Get News Articles by authorId
+GET http://localhost:3000/api/news?authorId=67187a9209bd0c0b5a1ae078
+Content-Type: application/json
+
+### Search News Articles by title
+GET http://localhost:3000/api/news/search?title=breaking+news+titl
+
+### Update Status News
+PATCH http://localhost:3000/api/news/status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
+Content-Type: application/json
+
+{
+  "newsId": "671c6f7d7469e3c2909ec557",
+  "status": "approved"
+}
+
+
+### ADMIN ACCESS ###
+
+### Update Role Account
+PATCH http://localhost:3000/api/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
+Content-Type: application/json
+
+{
+  "userId": "67187a9209bd0c0b5a1ae078",
+  "role": "admin"
+}
+
+### Get data Account
+GET http://localhost:3000/api/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
+Content-Type: application/json
