@@ -1,22 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import NewsModel, { News } from "../../../../../utils/model/News";
+import NewsModel from "../../../../../utils/model/News";
 import { connectToDB } from "../../../../../utils/lib/mongoose";
 import { authenticate } from "../../../../../utils/lib/authHelper";
+import { formatForUrl } from "../../../../../utils/format/url.format";
+import { News } from "../../../../../types/News";
 
 export async function POST(req: NextRequest) {
   try {
     await connectToDB();
 
-    const user = authenticate(req);
+    const user = await authenticate(req);
 
-    const { title, content, location, category, tags } = await req.json();
+    const { title, content, image, location, category, tags } =
+      await req.json();
 
-    if (!title || !content || !location || !category) {
+    if (!title || !content || !image || !location || !category) {
       return NextResponse.json(
-        { error: "Title, Content, Location, and Category are required." },
+        {
+          error: "Title, Content, Image, Location, and Category are required.",
+        },
         { status: 400 }
       );
     }
+
+    const title_seo = formatForUrl(title);
+
+    console.log(title_seo);
 
     if (tags && !Array.isArray(tags)) {
       return NextResponse.json(
@@ -25,12 +34,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { lat, long, city, province, country } = location;
-    if (!lat || !long || !city || !province || !country) {
+    const { lat, long, district, regency, country } = location;
+    if (!lat || !long || !district || !regency || !country) {
       return NextResponse.json(
         {
           error:
-            "Location must include lat, long, city, province, and country.",
+            "Location must include lat, long, district, regency, and country.",
         },
         { status: 400 }
       );
@@ -44,11 +53,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const existingTitleCeo = await NewsModel.findOne({ title_seo });
+    if (existingTitleCeo) {
+      return NextResponse.json(
+        { error: "Change the title of this news." },
+        { status: 400 }
+      );
+    }
+
     const newNews: News = new NewsModel({
       title,
+      title_seo,
       content,
+      image,
       author: user.id,
-      location: { lat, long, city, province, country },
+      location: { lat, long, district, regency, country },
       category,
       tags: tags,
     });

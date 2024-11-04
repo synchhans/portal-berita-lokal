@@ -1,3 +1,5 @@
+# ""[TOKEN 8] : dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev""
+
 ### SIGNUP
 POST http://localhost:3000/api/signup
 Content-Type: application/json
@@ -5,17 +7,7 @@ Content-Type: application/json
 {
   "name": "Muhamad Farhan", 
   "email": "muhamadfarhan.inc@gmail.com", 
-  "password": "@MonkeyDDragon1", 
-  "preferences": {
-    "topics": ["politik", "teknologi"],
-    "location": {
-      "lat": -6.9175,
-      "long": 107.6191,
-      "city": "Bandung",
-      "province": "Jawa Barat",
-      "country": "Indonesia"
-    }
-  }
+  "password": "@MonkeyDDragon1"
 }
 
 
@@ -28,78 +20,128 @@ Content-Type: application/json
     "password": "@MonkeyDDragon1"
 }
 
-
-### Create News Article
-POST http://localhost:3000/api/news/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Mjk5MTY2NjAsImV4cCI6MTcyOTkyMDI2MH0.Tvo0X1sXsUEEC2AKyTkWPaG5Ij7ROLWvyx2m38Jd8tY
-Content-Type: application/json
-
-{
-  "title": "Paula Bantah Baim Wong: Berita Perselingkuhan itu tidak benar",
-  "content": "This is the content of the breaking news article.",
-  "location": {
-    "lat": -6.9204,
-    "long": 107.5754,
-    "city": "Cicalengka",
-    "province": "West Java",
-    "country": "Indonesia"
-  },
-  "category": "Entertainment",
-  "tags": ["news", "breaking", "cicalengka"]
-}
-
-
 ### Get News Articles
 GET http://localhost:3000/api/news
 Content-Type: application/json
 
 ### Get News Articles by title
-GET http://localhost:3000/api/news?title=Breaking+News+Title
+GET http://localhost:3000/api/news?title=bosbos-teknologi-klaim-hp-bakal-segera-punah-ini-penggantinya
 Content-Type: application/json
 
 ### Get News Articles by category
-GET http://localhost:3000/api/news?category=Entertainment
+GET http://localhost:3000/api/news?category=Bisnis
 Content-Type: application/json
 
 ### Get News Articles by status
-GET http://localhost:3000/api/news?status=approved
+GET http://localhost:3000/api/news?status=pending
 Content-Type: application/json
 
 ### Get News Articles by limit
 GET http://localhost:3000/api/news?limit=1
 Content-Type: application/json
 
+### Get News Articles by skip
+GET http://localhost:3000/api/news?skip=5
+Content-Type: application/json
+
 ### Get News Articles by authorId
 GET http://localhost:3000/api/news?authorId=67187a9209bd0c0b5a1ae078
 Content-Type: application/json
 
-### Search News Articles by title
-GET http://localhost:3000/api/news/search?title=breaking+news+titl
+### Get News Articles by district
+GET http://localhost:3000/api/news?district=Cicalengka+Wetan
+Content-Type: application/json
 
-### Update Status News
+### Get News Articles by regency
+GET http://localhost:3000/api/news?regency=Bandung
+Content-Type: application/json
+
+### Search News Articles by title
+GET http://localhost:3000/api/news/search?title=Bos
+
+### Update Status News Single
 PATCH http://localhost:3000/api/news/status
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
 Content-Type: application/json
 
 {
-  "newsId": "671c6f7d7469e3c2909ec557",
+  "newsId": "671f003960b7c6fb17da154b",
   "status": "approved"
 }
+
+### Update Status News Many
+PATCH http://localhost:3000/api/news/status
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "newsId": [
+    "6726285f3a39bcb90c123e79",
+    "672628673a39bcb90c123e7d",
+    "6726286b3a39bcb90c123e81",
+    "6726286c3a39bcb90c123e85",
+    "6726286e3a39bcb90c123e89",
+    "672628703a39bcb90c123e8d",
+    "672628723a39bcb90c123e91"
+  ],
+  "status": "approved"
+}
+
+### Delete News All
+DELETE http://localhost:3000/api/news
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMwMDg0NzAyLCJleHAiOjE3MzAwODgzMDJ9.mf312hcBxTRbUPnyu3lVjIk7UoWubXr_09aKVcSXMwE
+Content-Type: application/json
+
+### Delete News By Id
+DELETE http://localhost:3000/api/news?id=671eef5860b7c6fb17da14a4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzMwMDg0NzAyLCJleHAiOjE3MzAwODgzMDJ9.mf312hcBxTRbUPnyu3lVjIk7UoWubXr_09aKVcSXMwE
+Content-Type: application/json
+
+### Get authors by id
+GET http://localhost:3000/api/authors?id=67187a9209bd0c0b5a1ae078
+Content-Type: application/json
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ### ADMIN ACCESS ###
 
 ### Update Role Account
 PATCH http://localhost:3000/api/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
-Content-Type: application/json
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
 
 {
-  "userId": "67187a9209bd0c0b5a1ae078",
+  "userId": "6726277c3a39bcb90c123e6f",
   "role": "admin"
 }
 
 ### Get data Account
 GET http://localhost:3000/api/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyMDliZDBjMGI1YTFhZTA3OCIsImVtYWlsIjoibXVoYW1hZGZhcmhhbi5pbmNAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI5OTQyMTUyLCJleHAiOjE3Mjk5NDU3NTJ9.40M6uEFOMauiNKNTjdJ7AjBF2DTtzzBWLFRqpbxcPDg
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjYyNzdjM2EzOWJjYjkwYzEyM2U2ZiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzMwNTUzNzI3LCJleHAiOjE3MzA1NTczMjd9.gJ4tga26ddfcd6vrczJ_lJWCJynJdv3BuZzzqUUfZ2U
 Content-Type: application/json
+
+### GET LOCATION WITH OPENCAGE
+GET https://api.opencagedata.com/geocode/v1/json?q=-6.9986312+107.8308232&key=b7fced23e74544808f1afd64165ca1a8
+Content-Type: application/json
+
+### DELETE COLLECTION
+DELETE http://localhost:3000/api/admin/mongodb
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "name": "users"
+}
+
+###
+GET https://bisnis.tempo.co/read/1934843/bri-dukung-rencana-prabowo-putihkan-utang-petani-dan-nelayan-sudah-ditunggu-tunggu

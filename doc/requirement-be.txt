@@ -1,2 +1,46 @@
 - jwt (signin)
 - cookie (signin)
+- openCage (location)
+
+
+simulasi get news by location: 
+
+- 
+
+"location": {
+      "lat": -6.9986312,
+      "long": 107.8308232,
+      "district": "Ancolmekar",
+      "regency": "Bandung",
+      "country": "Indonesia"
+    },
+
+-
+
+"location": {
+      "lat": -6.9986312,
+      "long": 107.8308232,
+      "district": "Trijaya",
+      "regency": "Kuningan",
+      "country": "Indonesia"
+    },
+
+-
+
+"location": {
+      "lat": -6.9986312,
+      "long": 107.8308232,
+      "district": "Trijaya",
+      "regency": "Kuningan",
+      "country": "Indonesia"
+    },
+
+-
+
+"location": {
+      "lat": -6.9986312,
+      "long": 107.8308232,
+      "district": "Cicalengka Wetan",
+      "regency": "Bandung",
+      "country": "Indonesia"
+    },

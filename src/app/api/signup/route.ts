@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   await connectToDB();
 
   try {
-    const { name, email, password, preferences } = await req.json();
+    const { name, email, password } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -30,7 +30,6 @@ export async function POST(req: Request) {
       name,
       email,
       password: hashedPassword,
-      preferences,
     });
 
     const newUser = await newUserDoc.save();

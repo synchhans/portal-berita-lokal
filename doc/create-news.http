@@ -1,0 +1,143 @@
+# ""[TOKEN 8] : dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev""
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Mitsubishi Perlihatkan Tampang Xforce Versi 7 Penumpang",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://akcdn.detik.net.id/visual/2024/10/27/mitsubishi-dst-concept-3_169.png?w=650&q=90",
+  "location": {
+    "lat":-6.9986312,
+    "long": 107.8308232,
+    "district": "Trijaya",
+    "regency": "Kuningan",
+    "country": "Indonesia"
+  },
+  "category": "Bisnis",
+  "tags": ["news", "breaking", "cicalengka"]
+}
+
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Mees Hilgers Cetak Gol, Twente Menang 5-0",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://akcdn.detik.net.id/visual/2024/10/04/fc-twente-vs-fenerbahce-di-liga-europa_169.jpeg?w=650&q=90",
+  "location": {
+    "lat":-6.9986312,
+    "long": 107.8308232,
+    "district": "Trijaya",
+    "regency": "Kuningan",
+    "country": "Indonesia"
+  },
+  "category": "Olahraga",
+  "tags": ["news", "breaking", "trijaya"]
+}
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Bos-bos Teknologi Klaim Hp Bakal Segera Punah, Ini Penggantinya",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://akcdn.detik.net.id/visual/2024/09/26/meta-platforms-virtual-reality-3_169.jpeg?w=650&q=90",
+  "location": {
+    "lat":-6.9986312,
+    "long": 107.8308232,
+    "district": "Trijaya",
+    "regency": "Kuningan",
+    "country": "Indonesia"
+  },
+  "category": "Teknologi",
+  "tags": ["news", "breaking", "trijaya"]
+}
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Ragam Reaksi terhadap Keinginan Indonesia Bergabung dengan BRICS",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://statik.tempo.co/data/2024/10/28/id_1348682/1348682_720.jpg",
+  "location": {
+    "lat":-6.9986312,
+    "long": 107.8308232,
+    "district": "Cicalengka Wetan",
+    "regency": "Bandung",
+    "country": "Indonesia"
+  },
+  "category": "Otomotif",
+  "tags": ["news", "breaking", "cicalengka"]
+}
+
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Top 3 Hukum: Zarof Ricar Diduga Bermain dalam Perkara Ronald Tannur hingga Kronologi Agus Disiram Air Keras",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://statik.tempo.co/data/2024/10/25/id_1348323/1348323_720.jpg",
+  "location": {
+    "lat":-6.9986312,
+    "long": 107.8308232,
+    "district": "Cicalengka Wetan",
+    "regency": "Bandung",
+    "country": "Indonesia"
+  },
+  "category": "Peristiwa Lokal",
+  "tags": ["news", "hukum", "cicalengka"]
+}
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Hadapi Debat Perdana Pilgub Jateng, Andika Perkasa dan Hendrar Prihadi Sudah Diskusi dengan Ahli",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://statik.tempo.co/data/2024/10/28/id_1348703/1348703_720.jpg",
+  "location": {
+    "lat":-6.9467652,
+    "long": 107.5933474,
+    "district": "Jl. Leuwi Panjang",
+    "regency": "Kota Bandung",
+    "country": "Indonesia"
+  },
+  "category": "Peristiwa Lokal",
+  "tags": ["news", "hukum", "leuwipanjang"]
+}
+
+### Create News Article
+POST http://localhost:3000/api/news/create
+Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
+Content-Type: application/json
+
+{
+  "title": "Ketika Rano Karno Diserang Ridwan Kamil dan Dharma Pongrekun pada Debat Kedua Pilkada Jakarta",
+  "content": "This is the content of the breaking news test article.",
+  "image": "https://statik.tempo.co/data/2024/10/27/id_1348633/1348633_720.jpg",
+  "location": {
+    "lat":-6.9467652,
+    "long": 107.5933474,
+    "district": "Jl. Leuwi Panjang",
+    "regency": "Kota Bandung",
+    "country": "Indonesia"
+  },
+  "category": "Politik",
+  "tags": ["news", "politik", "leuwipanjang"]
+}

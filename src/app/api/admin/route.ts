@@ -5,7 +5,7 @@ import UserModel from "../../../../utils/model/User";
 
 export async function GET(req: NextRequest) {
   try {
-    const user = authenticate(req);
+    const user = await authenticate(req);
 
     if (user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest) {
   try {
     await connectToDB();
 
-    const user = authenticate(req);
+    const user = await authenticate(req);
     const { userId, role } = await req.json();
 
     if (user.role !== "admin") {

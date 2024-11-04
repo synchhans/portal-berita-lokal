@@ -8,12 +8,26 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        expletus: ["var(--font-expletus-sans)", "sans-serif"],
+      },
+      fontWeight: {
+        normal: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        light: "var(--color-white)",
+        dark: "var(--color-black)",
+        primary: "var(--color-utama)",
+        secondary: "var(--color-kedua)",
+        border: "var(--color-border)",
+        hint: "var(--color-hint)",
       },
     },
   },
   plugins: [],
 };
+
 export default config;

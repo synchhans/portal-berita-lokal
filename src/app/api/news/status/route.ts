@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest) {
   try {
     await connectToDB();
 
-    const user = authenticate(req);
+    const user = await authenticate(req);
     const { newsId, status } = await req.json();
 
     if (user.role !== "admin") {
@@ -31,16 +31,26 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const news = await NewsModel.findById(newsId);
-    if (!news) {
-      return NextResponse.json({ error: "News not found." }, { status: 404 });
+    const newsIds = Array.isArray(newsId) ? newsId : [newsId];
+
+    // Fetch and update each news item
+    const updatedNews = [];
+    for (const id of newsIds) {
+      const news = await NewsModel.findById(id);
+      if (!news) {
+        return NextResponse.json(
+          { error: `News with ID ${id} not found.` },
+          { status: 404 }
+        );
+      }
+
+      news.status = status;
+      await news.save();
+      updatedNews.push(news);
     }
 
-    news.status = status;
-    await news.save();
-
     return NextResponse.json(
-      { message: "News status updated successfully.", news },
+      { message: "News status updated successfully.", updatedNews },
       { status: 200 }
     );
   } catch (error) {

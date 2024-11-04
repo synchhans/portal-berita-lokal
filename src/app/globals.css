@@ -3,25 +3,123 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-utama: #ff6600;
+  --color-kedua: #fce3d3;
+  --color-border: #dedede;
+  --color-hint: #c0c0c0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-black);
+  font-family: var(--font-expletus-sans);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .outline-hint {
+    outline: 2px solid var(--color-hint);
+  }
+}
+
+.search-bar:focus-within .fa-search {
+  color: var(--color-utama);
+}
+
+.custom-scrollbar {
+  overflow-x: auto;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  cursor: pointer;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}
+
+.btn-category {
+  @apply flex items-center gap-2 px-4 py-2 border rounded-full font-bold;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  border-color: var(--color-border);
+}
+
+.btn-category:hover {
+  background-color: var(--color-utama);
+  color: var(--color-white);
+}
+
+.active {
+  background-color: var(--color-utama);
+  color: var(--color-white);
+}
+
+.input-form {
+  @apply border outline-border px-3 py-2 rounded-md my-2;
+}
+
+.btn-form {
+  @apply mt-5 border border-border w-min px-3 py-2 rounded-md;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: #ffffff !important;
+  font-size: sm !important;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  color: #cccccc !important;
+}
+
+.swiper-pagination-bullet {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #ffffff !important;
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "../../../../utils/lib/mongoose";
 import UserModel from "../../../../utils/model/User";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
   await connectToDB();
@@ -33,11 +33,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
+    const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!);
+    const token = await new SignJWT({ id: user._id, role: user.role })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("1h")
+      .sign(secretKey);
 
     const response = NextResponse.json(
       { message: "Login successful", token },

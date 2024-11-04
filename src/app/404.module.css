@@ -1,0 +1,27 @@
+.animatingText {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    #ff6b6b,
+    #f7c2b8,
+    #ffe68a,
+    #90e0ef,
+    #00f0b5
+  );
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glowing 3s linear infinite;
+}
+
+@keyframes glowing {
+  0% {
+    background-position: 0%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}

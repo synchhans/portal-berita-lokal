@@ -1,29 +1,18 @@
-import mongoose, { Document, Schema, models } from "mongoose";
-import { Location } from "../../types/Location";
-
-export interface News extends Document {
-  title: string;
-  content: string;
-  author: Schema.Types.ObjectId;
-  location: Location;
-  category: string;
-  tags: string[];
-  status: "approved" | "rejected" | "pending";
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt?: Date;
-}
+import mongoose, { Schema, models } from "mongoose";
+import { News } from "../../types/News";
 
 const NewsSchema = new Schema<News>(
   {
     title: { type: String, required: true, unique: true },
+    title_seo: { type: String, required: true, unique: true },
     content: { type: String, required: true },
+    image: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     location: {
       lat: { type: Number, required: true },
       long: { type: Number, required: true },
-      city: { type: String, required: true },
-      province: { type: String, required: true },
+      district: { type: String, required: true },
+      regency: { type: String, required: true },
       country: { type: String, required: true },
     },
     category: { type: String, required: true },
@@ -33,9 +22,25 @@ const NewsSchema = new Schema<News>(
       enum: ["approved", "rejected", "pending"],
       default: "pending",
     },
+    ratings: {
+      totalStars: { type: Number, default: 0 },
+      totalRatings: { type: Number, default: 0 },
+      userRatings: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+          },
+          stars: { type: Number, required: true, min: 1, max: 5 },
+        },
+      ],
+    },
+    views: { type: Number, default: 0 },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
