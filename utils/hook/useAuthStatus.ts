@@ -16,17 +16,25 @@ export const useAuthStatus = (): AuthStatus => {
 
   useEffect(() => {
     const checkAuth = () => {
-      const userRoleFromCookie = Cookies.get("user_role");
+      try {
+        const cookieData = Cookies.get("user_data");
+        if (cookieData) {
+          const parsedData = JSON.parse(cookieData);
+          const userRoleFromCookie = parsedData.role;
 
-      if (
-        userRoleFromCookie &&
-        ["user", "admin", "provider"].includes(userRoleFromCookie)
-      ) {
-        setUser({ role: userRoleFromCookie } as AuthenticatedUser);
-        setIsAuthenticated(true);
+          if (
+            userRoleFromCookie &&
+            ["user", "admin", "provider"].includes(userRoleFromCookie)
+          ) {
+            setUser({ role: userRoleFromCookie } as AuthenticatedUser);
+            setIsAuthenticated(true);
+          }
+        }
+      } catch (err) {
+        setError("Failed to parse user data");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     checkAuth();

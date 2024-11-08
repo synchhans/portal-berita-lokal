@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "../../types/User";
+import Cookies from "js-cookie";
 
 interface UseAuthReturn {
   login: (data: { email: string; password: string }) => Promise<void>;
@@ -84,6 +85,10 @@ export const useAuth = (): UseAuthReturn => {
         throw new Error(responseData.error || "Failed to login");
       }
 
+      const responseData = await res.json();
+
+      Cookies.set("token", responseData.token, { expires: 1, path: "/" });
+
       router.push("/dashboard?message=login_successful");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
@@ -131,7 +136,7 @@ export const useAuth = (): UseAuthReturn => {
         throw new Error("Failed to logout");
       }
 
-      router.push("/login?message=logout_successful");
+      router.push("/?message=logout_successful");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {

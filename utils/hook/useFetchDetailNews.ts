@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { News } from "../model/News";
-import { User } from "../model/User";
+import { News } from "../../types/News";
+import { User } from "../../types/User";
 
 interface UseFetchDetailNewsResult {
   newsDetail: News | null;

@@ -65,8 +65,8 @@ Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
 Content-Type: application/json
 
 {
-  "newsId": "671f003960b7c6fb17da154b",
-  "status": "approved"
+  "newsId": "6726285f3a39bcb90c123e79",
+  "status": "pending"
 }
 
 ### Update Status News Many
@@ -98,7 +98,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTg3YTkyM
 Content-Type: application/json
 
 ### Get authors by id
-GET http://localhost:3000/api/authors?id=67187a9209bd0c0b5a1ae078
+GET http://localhost:3000/api/authors?id=6726277c3a39bcb90c123e6f
 Content-Type: application/json
 
 
@@ -127,7 +127,7 @@ Authorization: Bearer dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev
 
 ### Get data Account
 GET http://localhost:3000/api/admin
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjYyNzdjM2EzOWJjYjkwYzEyM2U2ZiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzMwNTUzNzI3LCJleHAiOjE3MzA1NTczMjd9.gJ4tga26ddfcd6vrczJ_lJWCJynJdv3BuZzzqUUfZ2U
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY3MjYyNzdjM2EzOWJjYjkwYzEyM2U2ZiIsInJvbGUiOiJhZG1pbiIsIm5hbWUiOiJNdWhhbWFkIEZhcmhhbiIsImltYWdlIjoidXNlci5wbmciLCJpYXQiOjE3MzA3MzA5ODUsImV4cCI6MTczMDczNDU4NX0.IxDS16ZScQIrIPEBRfh6IVLdikHiZLwaq5jYEcrBPog
 Content-Type: application/json
 
 ### GET LOCATION WITH OPENCAGE

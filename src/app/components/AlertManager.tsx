@@ -14,6 +14,8 @@ const messageAlias: AlertMessages = {
   login_successful: "Login successful",
   register_successful: "Register successful",
   logout_successful: "Logout successful",
+  approved_successful: "Approved successful",
+  cancel_successful: "Cancel successful",
 };
 
 const AlertManager: React.FC<AlertManagerProps> = ({ path }) => {
@@ -25,16 +27,26 @@ const AlertManager: React.FC<AlertManagerProps> = ({ path }) => {
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
+    const storedMessage = sessionStorage.getItem("alertMessage");
+    if (storedMessage) {
+      setDisplayMessage(decodeURIComponent(storedMessage));
+      setShowAlert(true);
+
+      sessionStorage.removeItem("alertMessage");
+    }
+
     if (message) {
       const msg = messageAlias[message as keyof typeof messageAlias] || null;
       if (msg) {
-        setDisplayMessage(decodeURIComponent(msg));
-        setShowAlert(true);
+        sessionStorage.setItem("alertMessage", decodeURIComponent(msg));
 
-        router.replace(path);
+        const newUrl = window.location.href.split("?")[0];
+        window.history.replaceState({}, "", newUrl);
+
+        window.location.reload();
       }
     }
-  }, [message, router, path]);
+  }, [message]);
 
   const handleCloseAlert = () => {
     setShowAlert(false);

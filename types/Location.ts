@@ -1,7 +1,7 @@
 export interface Location {
   lat: number;
   long: number;
-  city: string;
-  province: string;
+  district: string;
+  regency: string;
   country: string;
 }

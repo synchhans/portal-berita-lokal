@@ -2,7 +2,7 @@
 
 const SkeletonCards: React.FC = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 max-w-[925px] mx-auto mb-48">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 mb-48">
       {[...Array(9)].map((_, index) => (
         <div
           key={index}

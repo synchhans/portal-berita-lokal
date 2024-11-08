@@ -1,28 +1,40 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FiEye } from "react-icons/fi";
 import { formatForUrl } from "../../../utils/format/url.format";
 import { News } from "../../../types/News";
+import { useState } from "react";
+import useApproveNews from "../../../utils/hook/useApproveNews";
 
 interface CardsProps {
   data: News[];
+  role?: string;
+  showActions?: boolean;
+  showApprove?: boolean;
+  showView?: boolean;
+  showCancel?: boolean;
 }
 
-const Cards: React.FC<CardsProps> = ({ data }) => {
-  const router = useRouter();
+const Cards: React.FC<CardsProps> = ({
+  data,
+  role,
+  showActions,
+  showApprove,
+  showView,
+  showCancel,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
+  const { loading: isLoading, error, changeNews } = useApproveNews();
 
-  const handleClick = (e: React.MouseEvent, path: string, index: number) => {
+  const handleApprove = async (e: React.MouseEvent, itemId: string) => {
     e.preventDefault();
     setLoading(true);
-    setLoadingIndex(index);
+    changeNews(itemId, "approved");
+  };
 
-    setTimeout(() => {
-      router.push(path);
-      setLoading(false);
-    }, 800);
+  const handleCancle = async (e: React.MouseEvent, itemId: string) => {
+    e.preventDefault();
+    setLoading(true);
+    changeNews(itemId, "pending");
   };
 
   const getRelativeTime = (dateString: string) => {
@@ -52,13 +64,11 @@ const Cards: React.FC<CardsProps> = ({ data }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 max-w-[925px] mx-auto mb-48">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 mb-48">
       {data.length === 0 ? (
         <div className="col-span-full text-center mt-20">
           <p className="text-lg font-semibold text-[#212121]">
-            <span className="text-red-500">
-              Berita di daerah anda tidak ada
-            </span>
+            <span className="text-red-500">Berita tidak ada</span>
           </p>
         </div>
       ) : (
@@ -70,7 +80,6 @@ const Cards: React.FC<CardsProps> = ({ data }) => {
             <div
               key={item._id as string}
               className="border rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
-              onClick={(e) => handleClick(e, cardPath, index)}
             >
               <img
                 src={item.image}
@@ -84,14 +93,56 @@ const Cards: React.FC<CardsProps> = ({ data }) => {
                 <h2 className="font-bold text-lg text-gray-900 line-clamp-2 mb-2">
                   {item.title}
                 </h2>
-                <div className="flex justify-between items-center text-gray-500 text-sm">
+                <div className="flex justify-between items-center text-gray-500 mb-2 text-sm">
                   <span>{relativeTime}</span>
                   <div className="flex items-center gap-1">
                     <FiEye className="text-lg" />
                     <span>{item.views}</span>
                   </div>
                 </div>
+                {showActions && (
+                  <p
+                    className={`text-sm font-medium mb-5 ${
+                      item.status === "approved"
+                        ? "text-green-600"
+                        : "text-yellow-600"
+                    }`}
+                  >
+                    {item.status === "approved"
+                      ? "Sudah disetujui oleh admin"
+                      : "Belum disetujui oleh admin"}
+                  </p>
+                )}
               </div>
+              {showActions && (
+                <div className="p-4 flex justify-around border-t">
+                  {role === "admin" && showApprove && (
+                    <button
+                      onClick={(e) => handleApprove(e, item._id as string)}
+                      className="text-green-500 font-semibold hover:underline"
+                    >
+                      Setujui
+                    </button>
+                  )}
+                  {role === "admin" && showCancel && (
+                    <button
+                      onClick={(e) => handleCancle(e, item._id as string)}
+                      className="text-red-500 font-semibold hover:underline"
+                    >
+                      Batalkan
+                    </button>
+                  )}
+                  {showView && (
+                    <a
+                      href={`/${formatForUrl(item.category)}/${item.title_seo}`}
+                      className="text-blue-500 font-semibold hover:underline"
+                      target="_blank"
+                    >
+                      Lihat
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           );
         })

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     expires: new Date(0),
   });
 
-  response.cookies.set("user_role", "", {
+  response.cookies.set("user_data", "", {
     httpOnly: true,
     secure: true,
     sameSite: "strict",

@@ -3,11 +3,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "../../../../../utils/hook/useAuth";
 
-export default function DashboardUser() {
+const DashboardUser: React.FC<DashboardProps> = ({ user }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
-
   const { logout, isLoading: loading } = useAuth();
 
   const handleLogout = async () => {
@@ -105,9 +104,11 @@ export default function DashboardUser() {
               className="flex items-center cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <span className="mr-2 text-gray-700 font-semibold">Name</span>
+              <span className="mr-2 text-gray-700 font-semibold">
+                {user?.name}
+              </span>
               <img
-                src={"/images/user.png"}
+                src={`/images/${user?.image}`}
                 alt="Profile"
                 width={40}
                 height={40}
@@ -140,4 +141,6 @@ export default function DashboardUser() {
       </div>
     </div>
   );
-}
+};
+
+export default DashboardUser;

@@ -1,12 +1,14 @@
+"use client";
 import { FiUser, FiLogOut } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { useAuth } from "../../../../../utils/hook/useAuth";
-import useFetchNews from "../../../../../utils/hook/useFetchNews";
-import Cards from "../../Cards";
-import SkeletonCards from "../../skeleton/SkeletonCards";
+import { useAuth } from "../../../../utils/hook/useAuth";
+import useFetchNews from "../../../../utils/hook/useFetchNews";
+import Cards from "@/app/components/Cards";
+import SkeletonCards from "@/app/components/skeleton/SkeletonCards";
+import useUserData from "../../../../utils/hook/useUserData";
 
-const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
+const NewsAproved: React.FC<DashboardProps> = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
@@ -15,10 +17,12 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
     await logout();
   };
 
-  const { newsData, isLoading } = useFetchNews(1000, "pending");
+  const { newsData, isLoading, error } = useFetchNews(1000, "approved");
+  const { userData: user, isLoading: isPending } = useUserData();
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
+      {/* Sidebar */}
       <button
         className="fixed top-4 left-4 z-50 lg:hidden"
         onClick={() => setSidebarOpen(true)}
@@ -112,16 +116,22 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
               className="flex items-center cursor-pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <span className="mr-2 text-gray-700 font-semibold">
-                {user?.name}
-              </span>
-              <img
-                src={`/images/${user?.image}`}
-                alt="Profile"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
+              {isPending ? (
+                <div>Loading...</div>
+              ) : (
+                <>
+                  <span className="mr-2 text-gray-700 font-semibold">
+                    {user?.name}
+                  </span>
+                  <img
+                    src={`/images/${user?.image}`}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </>
+              )}
             </div>
             {dropdownOpen && (
               <div className="absolute right-0 mt-6 w-48 bg-white rounded-md shadow-lg">
@@ -153,8 +163,8 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
                 data={newsData}
                 role={user?.role}
                 showActions={true}
-                showApprove={true}
                 showView={true}
+                showCancel={true}
               />
             )}
           </div>
@@ -164,4 +174,4 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
   );
 };
 
-export default DashboardAdmin;
+export default NewsAproved;

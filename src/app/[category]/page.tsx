@@ -51,7 +51,9 @@ export default function Category() {
           terlama
         </div>
       </div>
-      {isLoading ? <SkeletonCards /> : <Cards data={newsData} />}
+      <div className="max-w-[925px] mx-auto">
+        {isLoading ? <SkeletonCards /> : <Cards data={newsData} />}
+      </div>
       <Footer />
     </div>
   );

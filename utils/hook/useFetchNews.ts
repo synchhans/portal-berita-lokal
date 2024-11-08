@@ -2,13 +2,12 @@
 import { useState, useEffect } from "react";
 import { News } from "../../types/News";
 
-
 interface Location {
   district: string;
   regency: string;
 }
 
-const useFetchNews = (limit: number, status: string, category?: string) => {
+const useFetchNews = (limit?: number, status?: string, category?: string) => {
   const [newsData, setNewsData] = useState<News[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -16,20 +15,21 @@ const useFetchNews = (limit: number, status: string, category?: string) => {
   useEffect(() => {
     const fetchNews = async () => {
       setIsLoading(true);
-      setError(null); // Reset error state before fetching
+      setError(null);
       try {
         const locationData = localStorage.getItem("lokasi");
         const location: Location | null = locationData
           ? JSON.parse(locationData)
           : null;
 
-        const baseUrl = `/api/news?status=${status}`;
+        const baseUrl = `/api/news`;
+        const statusQuery = status ? `?status=${status}` : "";
 
         const fetchNewsWithDeduplication = async (url: string) => {
           const response = await fetch(url);
           if (!response.ok) {
             if (response.status === 404) {
-              return []; // Kembalikan array kosong jika tidak ada berita
+              return [];
             }
             throw new Error(`Error fetching news: ${response.statusText}`);
           }
@@ -42,24 +42,23 @@ const useFetchNews = (limit: number, status: string, category?: string) => {
         let combinedNews: News[] = [];
 
         if (location) {
-          // Hanya tambahkan parameter jika ada
-          const districtUrl = `${baseUrl}&district=${location.district}${
+          const districtUrl = `${baseUrl}${statusQuery}&district=${
+            location.district
+          }${
             location.regency ? `&regency=${location.regency}` : ""
           }&limit=1000&skip=0`;
           const districtNews = await fetchNewsWithDeduplication(districtUrl);
           combinedNews = combinedNews.concat(districtNews);
         }
 
-        if (combinedNews.length < limit) {
-          const regencyUrl = `${baseUrl}&regency=${location?.regency}&limit=1000&skip=0`;
-          if (location?.regency) {
-            const regencyNews = await fetchNewsWithDeduplication(regencyUrl);
-            combinedNews = combinedNews.concat(regencyNews);
-          }
+        if (combinedNews.length === 0 && location?.regency) {
+          const regencyUrl = `${baseUrl}${statusQuery}&regency=${location.regency}&limit=1000&skip=0`;
+          const regencyNews = await fetchNewsWithDeduplication(regencyUrl);
+          combinedNews = combinedNews.concat(regencyNews);
         }
 
-        if (combinedNews.length < limit) {
-          const otherUrl = `${baseUrl}&limit=1000&skip=0`;
+        if (combinedNews.length === 0) {
+          const otherUrl = `${baseUrl}${statusQuery}&limit=1000&skip=0`;
           const otherNews = await fetchNewsWithDeduplication(otherUrl);
           combinedNews = combinedNews.concat(otherNews);
         }
@@ -69,16 +68,20 @@ const useFetchNews = (limit: number, status: string, category?: string) => {
         ).map((id) => combinedNews.find((news) => news._id === id)!);
 
         if (category) {
-          const categoryUrl = `${baseUrl}&category=${category}`;
+          const categoryUrl = `${baseUrl}${statusQuery}&category=${category}`;
           const categoryNews = await fetchNewsWithDeduplication(categoryUrl);
           setNewsData(categoryNews);
         } else {
           if (uniqueCombinedNews.length === 0) {
-            const latestNewsUrl = `${baseUrl}&limit=${limit}`;
+            const latestNewsUrl = `${baseUrl}${statusQuery}&limit=${
+              limit || 1000
+            }`;
             const latestNews = await fetchNewsWithDeduplication(latestNewsUrl);
-            setNewsData(latestNews.slice(0, limit));
+            setNewsData(latestNews.slice(0, limit || latestNews.length));
           } else {
-            setNewsData(uniqueCombinedNews.slice(0, limit));
+            setNewsData(
+              uniqueCombinedNews.slice(0, limit || uniqueCombinedNews.length)
+            );
           }
         }
       } catch (err) {

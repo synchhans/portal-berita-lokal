@@ -7,6 +7,7 @@ import Lokasi from "./components/Lokasi";
 import SkeletonBanner from "./components/skeleton/SkeletonBanner";
 import SkeletonCards from "./components/skeleton/SkeletonCards";
 import useFetchNews from "../../utils/hook/useFetchNews";
+import AlertManager from "./components/AlertManager";
 
 export default function Home() {
   const { newsData, error, isLoading } = useFetchNews(7, "approved");
@@ -21,6 +22,7 @@ export default function Home() {
   return (
     <div className="w-full max-w-full">
       <Lokasi />
+      <AlertManager path="/" />
       <Header />
       {isLoading ? <SkeletonBanner /> : <Banner slides={slides} />}
       <div className="flex justify-between my-5 items-center max-w-[900px] mx-auto">
@@ -29,7 +31,9 @@ export default function Home() {
           terkini
         </div>
       </div>
-      {isLoading ? <SkeletonCards /> : <Cards data={cardsData} />}
+      <div className="max-w-[925px] mx-auto">
+        {isLoading ? <SkeletonCards /> : <Cards data={cardsData} />}
+      </div>
       <Footer />
     </div>
   );

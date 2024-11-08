@@ -13,26 +13,39 @@ export async function middleware(req: NextRequest) {
         !payload ||
         typeof payload !== "object" ||
         !("id" in payload) ||
-        !("role" in payload)
+        !("role" in payload) ||
+        !("name" in payload) ||
+        !("image" in payload)
       ) {
         throw new Error("Invalid token payload");
       }
 
+      const user_data = {
+        id: payload.id,
+        name: payload.name,
+        role: payload.role,
+        image: payload.image,
+      };
       if (
         req.nextUrl.pathname === "/login" ||
         req.nextUrl.pathname === "/register"
       ) {
-        return NextResponse.redirect(
-          new URL("/dashboard?role=" + payload.role, req.url)
-        );
+        return NextResponse.redirect(new URL("/dashboard", req.url));
       }
 
       const response = NextResponse.next();
-      response.cookies.set("user_role", payload.role as string);
+      response.cookies.set("user_data", JSON.stringify(user_data), {
+        path: "/",
+        secure: true,
+      });
       return response;
     }
 
-    if (req.nextUrl.pathname === "/dashboard") {
+    if (
+      req.nextUrl.pathname === "/dashboard" ||
+      req.nextUrl.pathname === "/news/approved" ||
+      req.nextUrl.pathname === "/profile"
+    ) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
@@ -40,7 +53,11 @@ export async function middleware(req: NextRequest) {
   } catch (error) {
     console.error("Authentication error:", error);
 
-    if (req.nextUrl.pathname === "/dashboard") {
+    if (
+      req.nextUrl.pathname === "/dashboard" ||
+      req.nextUrl.pathname === "/news/approved" ||
+      req.nextUrl.pathname === "/profile"
+    ) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
@@ -49,5 +66,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/login", "/register"],
+  matcher: ["/dashboard", "/login", "/register", "/news/approved", "/profile"],
 };
