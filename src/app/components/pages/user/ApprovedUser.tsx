@@ -1,26 +1,31 @@
-import { FiUser, FiLogOut } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "../../../../../utils/hook/useAuth";
 import useFetchNews from "../../../../../utils/hook/useFetchNews";
+import { FiLogOut, FiPlus, FiUser } from "react-icons/fi";
 import SkeletonCards from "../../skeleton/SkeletonCards";
 import Cards from "../../Cards";
 
-const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
+const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
-
   const { logout, isLoading: loading } = useAuth();
-
   const handleLogout = async () => {
     await logout();
   };
 
-  const { newsData, isLoading } = useFetchNews(1000, "pending", "", "provider");
+  const { newsData, isLoading } = useFetchNews(
+    1000,
+    "approved",
+    "",
+    "",
+    user?.id
+  );
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex bg-gray-100 min-h-screen">
+      {/* Sidebar */}
       <button
         className="fixed top-4 left-4 z-50 lg:hidden"
         onClick={() => setSidebarOpen(true)}
@@ -47,8 +52,8 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
         } transition-transform lg:translate-x-0 z-40`}
       >
         <div className="p-5 relative flex justify-between items-center">
-          <h2 className="text-2xl font-bold">
-            <a href="/dashboard">Provider</a>
+          <h2 className="text-2xl font-bold capitalize">
+            <a href="/dashboard">User</a>
           </h2>
           <button
             className="lg:hidden text-gray-300 hover:text-white"
@@ -92,21 +97,10 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
                 Berita Disetujui
               </a>
             </li>
-            <li>
-              <a
-                href="/news/provider"
-                className={`block p-4 text-blue-500 hover:text-white hover:bg-gray-700 ${
-                  pathname === "/news/provider" ? "bg-gray-700" : ""
-                }`}
-              >
-                Tinjau Berita
-              </a>
-            </li>
           </ul>
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 ml-0 lg:ml-64 transition-all">
         <header className="bg-white shadow p-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -151,23 +145,30 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
         </header>
 
         <main className="p-4 flex-1">
-          <div className="mt-6">
-            <h2 className="text-xl font-bold mb-4">Berita Tertunda</h2>
-            {isLoading ? (
-              <SkeletonCards />
-            ) : (
-              <Cards
-                data={newsData}
-                role={user?.role}
-                showActions={true}
-                showView={true}
-              />
-            )}
+          <div className="mt-6 flex justify-between items-center">
+            <h2 className="text-xl font-bold mb-8">Berita Disetujui</h2>
+            <a
+              href="/news/create"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 flex items-center space-x-2"
+            >
+              <FiPlus className="text-lg" />
+              <span>Buat Berita</span>
+            </a>
           </div>
+          {isLoading ? (
+            <SkeletonCards />
+          ) : (
+            <Cards
+              data={newsData}
+              role={user?.role}
+              showActions={true}
+              showView={true}
+            />
+          )}
         </main>
       </div>
     </div>
   );
 };
 
-export default DashboardProvider;
+export default ApprovedUser;

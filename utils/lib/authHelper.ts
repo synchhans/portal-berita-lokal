@@ -12,8 +12,10 @@ export const authenticate = async (
 
   if (token === "dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev") {
     return {
-      id: "6726277c3a39bcb90c123e6f",
-      role: "admin",
+      id: process.env.USER_DEV_ID!,
+      role: process.env.USER_DEV_ROLE!,
+      name: "Dev#0001",
+      image: "user.png",
     };
   }
 

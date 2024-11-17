@@ -10,7 +10,14 @@ import useFetchNews from "../../utils/hook/useFetchNews";
 import AlertManager from "./components/AlertManager";
 
 export default function Home() {
-  const { newsData, error, isLoading } = useFetchNews(7, "approved");
+  const { newsData, error, isLoading } = useFetchNews(
+    7,
+    "approved",
+    "",
+    "",
+    "",
+    true
+  );
 
   if (error) {
     return <div>Error: {error}</div>;

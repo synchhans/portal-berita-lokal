@@ -7,7 +7,14 @@ interface Location {
   regency: string;
 }
 
-const useFetchNews = (limit?: number, status?: string, category?: string) => {
+const useFetchNews = (
+  limit?: number,
+  status?: string,
+  category?: string,
+  role?: string,
+  id?: string,
+  fetchLocation?: boolean
+) => {
   const [newsData, setNewsData] = useState<News[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -17,20 +24,23 @@ const useFetchNews = (limit?: number, status?: string, category?: string) => {
       setIsLoading(true);
       setError(null);
       try {
-        const locationData = localStorage.getItem("lokasi");
-        const location: Location | null = locationData
-          ? JSON.parse(locationData)
+        const location: Location | null = fetchLocation
+          ? JSON.parse(localStorage.getItem("lokasi") || "null")
           : null;
 
         const baseUrl = `/api/news`;
-        const statusQuery = status ? `?status=${status}` : "";
+        const statusQuery = status ? `status=${status}` : "";
+        const roleQuery = role ? `type=${role}` : "";
+        const idQuery = id ? `authorId=${id}` : "";
+
+        const queryParams = [statusQuery, roleQuery, idQuery]
+          .filter(Boolean)
+          .join("&");
 
         const fetchNewsWithDeduplication = async (url: string) => {
           const response = await fetch(url);
           if (!response.ok) {
-            if (response.status === 404) {
-              return [];
-            }
+            if (response.status === 404) return [];
             throw new Error(`Error fetching news: ${response.statusText}`);
           }
           const news: News[] = await response.json();
@@ -42,7 +52,7 @@ const useFetchNews = (limit?: number, status?: string, category?: string) => {
         let combinedNews: News[] = [];
 
         if (location) {
-          const districtUrl = `${baseUrl}${statusQuery}&district=${
+          const districtUrl = `${baseUrl}?${queryParams}&district=${
             location.district
           }${
             location.regency ? `&regency=${location.regency}` : ""
@@ -52,13 +62,13 @@ const useFetchNews = (limit?: number, status?: string, category?: string) => {
         }
 
         if (combinedNews.length === 0 && location?.regency) {
-          const regencyUrl = `${baseUrl}${statusQuery}&regency=${location.regency}&limit=1000&skip=0`;
+          const regencyUrl = `${baseUrl}?${queryParams}&regency=${location.regency}&limit=1000&skip=0`;
           const regencyNews = await fetchNewsWithDeduplication(regencyUrl);
           combinedNews = combinedNews.concat(regencyNews);
         }
 
         if (combinedNews.length === 0) {
-          const otherUrl = `${baseUrl}${statusQuery}&limit=1000&skip=0`;
+          const otherUrl = `${baseUrl}?${queryParams}&limit=1000&skip=0`;
           const otherNews = await fetchNewsWithDeduplication(otherUrl);
           combinedNews = combinedNews.concat(otherNews);
         }
@@ -68,12 +78,12 @@ const useFetchNews = (limit?: number, status?: string, category?: string) => {
         ).map((id) => combinedNews.find((news) => news._id === id)!);
 
         if (category) {
-          const categoryUrl = `${baseUrl}${statusQuery}&category=${category}`;
+          const categoryUrl = `${baseUrl}?${queryParams}&category=${category}`;
           const categoryNews = await fetchNewsWithDeduplication(categoryUrl);
           setNewsData(categoryNews);
         } else {
           if (uniqueCombinedNews.length === 0) {
-            const latestNewsUrl = `${baseUrl}${statusQuery}&limit=${
+            const latestNewsUrl = `${baseUrl}?${queryParams}&limit=${
               limit || 1000
             }`;
             const latestNews = await fetchNewsWithDeduplication(latestNewsUrl);
@@ -93,7 +103,7 @@ const useFetchNews = (limit?: number, status?: string, category?: string) => {
     };
 
     fetchNews();
-  }, [limit, status, category]);
+  }, [limit, status, category, role, id]);
 
   return { newsData, error, isLoading };
 };

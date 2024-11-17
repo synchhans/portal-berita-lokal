@@ -44,6 +44,8 @@ export async function middleware(req: NextRequest) {
     if (
       req.nextUrl.pathname === "/dashboard" ||
       req.nextUrl.pathname === "/news/approved" ||
+      req.nextUrl.pathname === "/news/create" ||
+      req.nextUrl.pathname === "/news/update" ||
       req.nextUrl.pathname === "/profile"
     ) {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -56,6 +58,8 @@ export async function middleware(req: NextRequest) {
     if (
       req.nextUrl.pathname === "/dashboard" ||
       req.nextUrl.pathname === "/news/approved" ||
+      req.nextUrl.pathname === "/news/create" ||
+      req.nextUrl.pathname === "/news/update" ||
       req.nextUrl.pathname === "/profile"
     ) {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -66,5 +70,13 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/login", "/register", "/news/approved", "/profile"],
+  matcher: [
+    "/dashboard",
+    "/login",
+    "/register",
+    "/news/approved",
+    "/news/create",
+    "/news/update",
+    "/profile",
+  ],
 };

@@ -99,6 +99,7 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
         </nav>
       </div>
 
+
       {/* Main Content */}
       <div className="flex-1 ml-0 lg:ml-64 transition-all">
         <header className="bg-white shadow p-4 flex justify-between items-center">
@@ -155,6 +156,7 @@ const DashboardAdmin: React.FC<DashboardProps> = ({ user }) => {
                 showActions={true}
                 showApprove={true}
                 showView={true}
+                showDelete={true}
               />
             )}
           </div>

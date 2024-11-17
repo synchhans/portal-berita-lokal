@@ -32,15 +32,16 @@ const useApproveNews = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to approve the news");
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to approve the news");
       }
 
       if (status === "approved") {
-        sessionStorage.setItem("alertMessage", "Approved successful");
-        router.push("/dashboard?message=approved_successful");
+        sessionStorage.setItem("alertMessage", "Approval successful");
+        router.replace("/news/approved");
       } else {
         sessionStorage.setItem("alertMessage", "Cancel successful");
-        router.push("/dashboard?message=cancel_successful");
+        router.replace("/dashboard");
       }
     } catch (err: any) {
       console.error("Error approving the news:", err);

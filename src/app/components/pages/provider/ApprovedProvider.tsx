@@ -1,26 +1,32 @@
-import { FiUser, FiLogOut } from "react-icons/fi";
+"use client";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "../../../../../utils/hook/useAuth";
 import useFetchNews from "../../../../../utils/hook/useFetchNews";
 import SkeletonCards from "../../skeleton/SkeletonCards";
 import Cards from "../../Cards";
+import { FiLogOut, FiUser } from "react-icons/fi";
 
-const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
+const ApprovedProvider: React.FC<DashboardProps> = ({ user }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
-
   const { logout, isLoading: loading } = useAuth();
-
   const handleLogout = async () => {
     await logout();
   };
 
-  const { newsData, isLoading } = useFetchNews(1000, "pending", "", "provider");
+  const { newsData, isLoading } = useFetchNews(
+    1000,
+    "approved",
+    "",
+    "provider",
+    ""
+  );
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex bg-gray-100 min-h-screen">
+      {/* Sidebar */}
       <button
         className="fixed top-4 left-4 z-50 lg:hidden"
         onClick={() => setSidebarOpen(true)}
@@ -47,7 +53,7 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
         } transition-transform lg:translate-x-0 z-40`}
       >
         <div className="p-5 relative flex justify-between items-center">
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-bold capitalize">
             <a href="/dashboard">Provider</a>
           </h2>
           <button
@@ -106,7 +112,6 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 ml-0 lg:ml-64 transition-all">
         <header className="bg-white shadow p-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -152,7 +157,7 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
 
         <main className="p-4 flex-1">
           <div className="mt-6">
-            <h2 className="text-xl font-bold mb-4">Berita Tertunda</h2>
+            <h2 className="text-xl font-bold mb-4">Berita Disetujui</h2>
             {isLoading ? (
               <SkeletonCards />
             ) : (
@@ -161,6 +166,7 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
                 role={user?.role}
                 showActions={true}
                 showView={true}
+                showCancel={true}
               />
             )}
           </div>
@@ -170,4 +176,4 @@ const DashboardProvider: React.FC<DashboardProps> = ({ user }) => {
   );
 };
 
-export default DashboardProvider;
+export default ApprovedProvider;

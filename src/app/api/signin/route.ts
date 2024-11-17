@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       .sign(secretKey);
 
     const response = NextResponse.json(
-      { message: "Login successful", token },
+      { message: "Login successful", token, user: { id: user._id } },
       { status: 200 }
     );
 

@@ -18,7 +18,6 @@ export default function Profile() {
     user?.id
   );
 
-  console.log(userFetch);
 
   const handleLogout = async () => {
     await logout();
@@ -53,8 +52,8 @@ export default function Profile() {
         } transition-transform lg:translate-x-0 z-40`}
       >
         <div className="p-5 relative flex justify-between items-center">
-          <h2 className="text-2xl font-bold">
-            <a href="/dashboard">Admin</a>
+          <h2 className="text-2xl font-bold capitalize">
+            <a href="/dashboard">{user?.role || "PortDash"}</a>
           </h2>
           <button
             className="lg:hidden text-gray-300 hover:text-white"
@@ -98,11 +97,15 @@ export default function Profile() {
                 Berita Disetujui
               </a>
             </li>
-            <li>
-              <a href="#" className="block p-4 hover:bg-gray-700">
-                <span className="text-amber-500">[Monetization Sys]</span>
-              </a>
-            </li>
+            {user?.role === "admin" ? (
+              <li>
+                <a href="#" className="block p-4 hover:bg-gray-700">
+                  <span className="text-amber-500">[Monetization Sys]</span>
+                </a>
+              </li>
+            ) : (
+              <></>
+            )}
           </ul>
         </nav>
       </div>
@@ -277,7 +280,12 @@ export default function Profile() {
                 Disini
               </a>
             </p>
-            <button className="w-full mt-4 p-3 bg-blue-600 text-white rounded-lg">
+            <button
+              className="w-full mt-4 p-3 bg-blue-600 text-white rounded-lg"
+              onClick={() => {
+                alert("Development");
+              }}
+            >
               Simpan
             </button>
           </div>

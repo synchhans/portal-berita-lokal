@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
     const category = searchParams.get("category");
+    const type = searchParams.get("type");
     const title = searchParams.get("title")
       ? decodeURIComponent(searchParams.get("title") as string)
       : null;
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
     const district = searchParams.get("district");
     const regency = searchParams.get("regency");
     const authorId = searchParams.get("authorId");
+    const id = searchParams.get("id");
 
     const query: Record<string, any> = {};
 
@@ -25,6 +27,9 @@ export async function GET(req: NextRequest) {
     if (category) query.category = { $regex: new RegExp(category, "i") };
     if (title) {
       query.title_seo = title;
+    }
+    if (type) {
+      query.type = type;
     }
     if (authorId) query.author = authorId;
 
@@ -34,6 +39,10 @@ export async function GET(req: NextRequest) {
 
     if (regency) {
       query["location.regency"] = regency;
+    }
+
+    if (id) {
+      query._id = id;
     }
 
     let newsQuery = NewsModel.find(query);
@@ -80,5 +89,48 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error("Error deleting news:", error);
     return NextResponse.json({ error: "Error deleting news" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    await connectToDB();
+
+    const user = await authenticate(req);
+
+    const { id, category, title, title_seo, image, content } = await req.json();
+
+    if (!id || !category || !title || !image || !content || !title_seo) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing required fields (id, category, title, image, content)",
+        },
+        { status: 400 }
+      );
+    }
+
+    const updatedNews = await NewsModel.findByIdAndUpdate(
+      id,
+      {
+        title,
+        title_seo,
+        image,
+        content,
+      },
+      { new: true }
+    );
+
+    if (!updatedNews) {
+      return NextResponse.json({ message: "News not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "News updated successfully", news: updatedNews },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating news:", error);
+    return NextResponse.json({ error: "Error updating news" }, { status: 500 });
   }
 }

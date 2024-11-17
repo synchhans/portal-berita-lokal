@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest) {
     const user = await authenticate(req);
     const { newsId, status } = await req.json();
 
-    if (user.role !== "admin") {
+    if (user.role === "user") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
     }
 

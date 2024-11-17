@@ -1,8 +1,10 @@
 # Portal Berita Lokal
 
-**Status:** `Development`
+**Status:** `Production`
 
-**Terakhir di update:** `26 Oktober 2024`
+**Publish Web:** <a href="https://portber.vercel.app" target="_blank" rel="noopener noreferrer">portber</a>
+
+**Terakhir di update:** `17 November 2024`
 
 **Deskripsi:** Portal Berita Lokal adalah platform berbasis web yang dirancang untuk membantu masyarakat menemukan berita lokal yang relevan dan akurat sesuai dengan lokasi mereka. Dengan tujuan memberikan akses informasi yang lebih baik, portal ini memungkinkan pengguna untuk mencari berita berdasarkan wilayah mereka dan berkontribusi dalam pembuatan konten berita. Setiap berita yang dikirimkan akan melalui proses validasi oleh admin sebelum dipublikasikan, memastikan hanya berita yang terverifikasi yang akan muncul di portal.
 

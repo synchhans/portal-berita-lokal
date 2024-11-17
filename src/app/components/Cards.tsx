@@ -1,9 +1,8 @@
-"use client";
 import { FiEye } from "react-icons/fi";
 import { formatForUrl } from "../../../utils/format/url.format";
 import { News } from "../../../types/News";
-import { useState } from "react";
 import useApproveNews from "../../../utils/hook/useApproveNews";
+import useDeleteNews from "../../../utils/hook/useDeleteNews";
 
 interface CardsProps {
   data: News[];
@@ -12,6 +11,8 @@ interface CardsProps {
   showApprove?: boolean;
   showView?: boolean;
   showCancel?: boolean;
+  showUpdate?: boolean;
+  showDelete?: boolean;
 }
 
 const Cards: React.FC<CardsProps> = ({
@@ -21,20 +22,32 @@ const Cards: React.FC<CardsProps> = ({
   showApprove,
   showView,
   showCancel,
+  showUpdate,
+  showDelete,
 }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const { loading: isLoading, error, changeNews } = useApproveNews();
+  const { changeNews } = useApproveNews();
 
   const handleApprove = async (e: React.MouseEvent, itemId: string) => {
     e.preventDefault();
-    setLoading(true);
     changeNews(itemId, "approved");
+  };
+
+  const handleUpdate = async (e: React.MouseEvent, itemId: string) => {
+    e.preventDefault();
+    window.open(`/news/update?newsId=${itemId}`, "_blank");
   };
 
   const handleCancle = async (e: React.MouseEvent, itemId: string) => {
     e.preventDefault();
-    setLoading(true);
     changeNews(itemId, "pending");
+  };
+
+  const { loading: loadingDelete, error, deleteNews } = useDeleteNews();
+
+  const handleDelete = async (itemId: string) => {
+    if (window.confirm("Are you sure you want to delete this news?")) {
+      await deleteNews(itemId);
+    }
   };
 
   const getRelativeTime = (dateString: string) => {
@@ -77,8 +90,9 @@ const Cards: React.FC<CardsProps> = ({
           const cardPath = `/${formatForUrl(item.category)}/${item.title_seo}`;
 
           return (
-            <div
-              key={item._id as string}
+            <a
+              href={showActions ? "#" : cardPath}
+              key={index}
               className="border rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
             >
               <img
@@ -124,7 +138,15 @@ const Cards: React.FC<CardsProps> = ({
                       Setujui
                     </button>
                   )}
-                  {role === "admin" && showCancel && (
+                  {role !== "provider" && showUpdate && (
+                    <button
+                      onClick={(e) => handleUpdate(e, item._id as string)}
+                      className="text-orange-500 font-semibold hover:underline"
+                    >
+                      Update
+                    </button>
+                  )}
+                  {role !== "user" && showCancel && (
                     <button
                       onClick={(e) => handleCancle(e, item._id as string)}
                       className="text-red-500 font-semibold hover:underline"
@@ -133,17 +155,29 @@ const Cards: React.FC<CardsProps> = ({
                     </button>
                   )}
                   {showView && (
-                    <a
-                      href={`/${formatForUrl(item.category)}/${item.title_seo}`}
+                    <button
+                      onClick={() =>
+                        window.open(
+                          `/${formatForUrl(item.category)}/${item.title_seo}`,
+                          "_blank"
+                        )
+                      }
                       className="text-blue-500 font-semibold hover:underline"
-                      target="_blank"
                     >
                       Lihat
-                    </a>
+                    </button>
+                  )}
+                  {role !== "provider" && showDelete && (
+                    <button
+                      onClick={(e) => handleDelete(item._id as string)}
+                      className="text-red-500 font-semibold hover:underline"
+                    >
+                      Hapus
+                    </button>
                   )}
                 </div>
               )}
-            </div>
+            </a>
           );
         })
       )}

@@ -9,6 +9,7 @@ export interface News extends Document {
   author: Schema.Types.ObjectId;
   location: Location;
   category: string;
+  type: "user" | "provider";
   tags: string[];
   status: "approved" | "rejected" | "pending";
   views: number;

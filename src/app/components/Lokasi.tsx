@@ -2,14 +2,6 @@
 import { useEffect, useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
-interface LokasiType {
-  lat: number;
-  long: number;
-  district: string;
-  regency: string;
-  country: string;
-}
-
 interface LokasiProps {
   defaultMessage?: string;
 }
@@ -20,6 +12,7 @@ const Lokasi: React.FC<LokasiProps> = ({
   const [lokasi, setLokasi] = useState<LokasiType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [locationChangeCount, setLocationChangeCount] = useState<number>(0);
 
   const API_KEY_OPEN_KAGE = process.env.NEXT_PUBLIC_API_KEY_OPEN_KAGE;
 
@@ -28,9 +21,19 @@ const Lokasi: React.FC<LokasiProps> = ({
     if (storedLocation) {
       setLokasi(JSON.parse(storedLocation));
     }
+
+    const storedChangeCount = localStorage.getItem("locationChangeCount");
+    if (storedChangeCount) {
+      setLocationChangeCount(parseInt(storedChangeCount, 10));
+    }
   }, []);
 
   const handleSetLocation = () => {
+    if (locationChangeCount >= 6) {
+      setErrorMessage("Batas maksimal pengaturan lokasi sudah tercapai.");
+      return;
+    }
+
     setLoading(true);
     setErrorMessage(null);
     if (navigator.geolocation) {
@@ -61,7 +64,11 @@ const Lokasi: React.FC<LokasiProps> = ({
 
               setLokasi(newLocation);
               localStorage.setItem("lokasi", JSON.stringify(newLocation));
-              window.location.reload();
+
+              // Update jumlah perubahan lokasi
+              const newCount = locationChangeCount + 1;
+              setLocationChangeCount(newCount);
+              localStorage.setItem("locationChangeCount", newCount.toString());
             } else {
               setErrorMessage("Lokasi tidak ditemukan.");
             }
@@ -118,9 +125,13 @@ const Lokasi: React.FC<LokasiProps> = ({
         <h1 className="mr-5">{defaultMessage}</h1>
       )}
       {errorMessage && <p className="text-red-400">{errorMessage}</p>}
+
       <button
         onClick={handleSetLocation}
-        className="flex items-center space-x-1 text-blue-400 hover:underline"
+        className={`flex items-center space-x-1 ${
+          locationChangeCount >= 6 ? "text-red-400 cursor-not-allowed" : "text-blue-400"
+        }  hover:underline`}
+        disabled={locationChangeCount >= 6}
       >
         <FaMapMarkerAlt className="text-lg" />
         <span>{lokasi ? "Ubah Lokasi" : "Atur Lokasi"}</span>

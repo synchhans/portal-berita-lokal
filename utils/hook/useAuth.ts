@@ -89,7 +89,42 @@ export const useAuth = (): UseAuthReturn => {
 
       Cookies.set("token", responseData.token, { expires: 1, path: "/" });
 
-      router.push("/dashboard?message=login_successful");
+      sessionStorage.setItem("alertMessage", "Login successful");
+
+      const storedLocation = localStorage.getItem("lokasi");
+      if (storedLocation) {
+        const lokasi = JSON.parse(storedLocation);
+        const userId = responseData.user.id;
+
+        const checkLocationResponse = await fetch(`/api/authors?id=${userId}`);
+        const user = await checkLocationResponse.json();
+
+        if (
+          user.preferences.location.district !== lokasi.district ||
+          user.preferences.location.regency !== lokasi.regency
+        ) {
+          const updateLocationResponse = await fetch(`/api/authors/location`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${responseData.token}`,
+            },
+            body: JSON.stringify({
+              userId,
+              location: {
+                district: lokasi.district,
+                regency: lokasi.regency,
+              },
+            }),
+          });
+
+          if (!updateLocationResponse.ok) {
+            throw new Error("Failed to update location in database");
+          }
+        }
+      }
+
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {
@@ -116,7 +151,8 @@ export const useAuth = (): UseAuthReturn => {
         throw new Error(responseData.error || "Failed to register");
       }
 
-      router.push("/login?message=register_successful");
+      sessionStorage.setItem("alertMessage", "Register successful");
+      router.push("/login");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {
@@ -136,7 +172,8 @@ export const useAuth = (): UseAuthReturn => {
         throw new Error("Failed to logout");
       }
 
-      router.push("/?message=logout_successful");
+      sessionStorage.setItem("alertMessage", "Logout successful");
+      router.push("/");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
     } finally {

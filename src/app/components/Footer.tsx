@@ -120,9 +120,8 @@ const Footer: React.FC = () => {
               <li>
                 <a href="#">
                   <img
-                    src="https://www.tempo.co/desktop/images/appstore.png"
+                    src="/images/appstore.jpg"
                     alt="App Store"
-                    loading="lazy"
                     className="w-24"
                   />
                 </a>
@@ -130,9 +129,8 @@ const Footer: React.FC = () => {
               <li>
                 <a href="#">
                   <img
-                    src="https://www.tempo.co/desktop/images/playstore.png"
+                    src="/images/playstore.jpg"
                     alt="Play Store"
-                    loading="lazy"
                     className="w-24"
                   />
                 </a>

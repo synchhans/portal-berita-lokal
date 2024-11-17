@@ -16,6 +16,7 @@ const NewsSchema = new Schema<News>(
       country: { type: String, required: true },
     },
     category: { type: String, required: true },
+    type: { type: String, default: "user" },
     tags: { type: [String], required: true },
     status: {
       type: String,

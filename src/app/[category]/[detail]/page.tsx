@@ -130,28 +130,38 @@ export default function Detail() {
               Berita Lain dari Penulis:
             </h2>
             <div className="space-y-4">
-              {moreNewsByAuthor
-                .filter((news) => news.title !== newsDetail.title)
-                .map((news) => (
-                  <div
-                    key={news.id}
-                    className="border border-gray-200 rounded-lg p-3 bg-white hover:shadow-md transition-shadow duration-200 hover:cursor-pointer"
-                  >
-                    <img
-                      src={news.image}
-                      alt={news.title}
-                      className="w-full h-36 object-cover rounded-md mb-2"
-                    />
-                    <h3 className="font-semibold text-sm mb-3">{news.title}</h3>
-                    <p className="text-xs text-gray-500">
-                      {new Date(news.updatedAt).toLocaleDateString("id-ID", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                  </div>
-                ))}
+              {moreNewsByAuthor.length === 1 ? (
+                <div className="col-span-full text-center mt-20">
+                  <p className="text-lg font-semibold text-[#212121]">
+                    <span className="text-red-500">Berita tidak ada</span>
+                  </p>
+                </div>
+              ) : (
+                moreNewsByAuthor
+                  .filter((news) => news.title !== newsDetail.title)
+                  .map((news) => (
+                    <div
+                      key={news.id}
+                      className="border border-gray-200 rounded-lg p-3 bg-white hover:shadow-md transition-shadow duration-200 hover:cursor-pointer"
+                    >
+                      <img
+                        src={news.image}
+                        alt={news.title}
+                        className="w-full h-36 object-cover rounded-md mb-2"
+                      />
+                      <h3 className="font-semibold text-sm mb-3">
+                        {news.title}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        {new Date(news.updatedAt).toLocaleDateString("id-ID", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  ))
+              )}
             </div>
           </div>
         </div>

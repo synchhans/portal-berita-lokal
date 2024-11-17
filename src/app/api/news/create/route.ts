@@ -25,8 +25,6 @@ export async function POST(req: NextRequest) {
 
     const title_seo = formatForUrl(title);
 
-    console.log(title_seo);
-
     if (tags && !Array.isArray(tags)) {
       return NextResponse.json(
         { error: "Tags must be an array." },
@@ -69,6 +67,7 @@ export async function POST(req: NextRequest) {
       author: user.id,
       location: { lat, long, district, regency, country },
       category,
+      type: user.role,
       tags: tags,
     });
 

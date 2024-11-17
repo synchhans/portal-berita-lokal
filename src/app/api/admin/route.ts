@@ -7,10 +7,6 @@ export async function GET(req: NextRequest) {
   try {
     const user = await authenticate(req);
 
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
-    }
-
     return NextResponse.json(
       {
         message: "Get data account successfully.",
