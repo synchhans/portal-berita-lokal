@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     await connectToDB();
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     const status = searchParams.get("status");
     const category = searchParams.get("category");
     const type = searchParams.get("type");
@@ -69,7 +69,7 @@ export async function DELETE(req: NextRequest) {
 
     const user = await authenticate(req);
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     const id = searchParams.get("id");
 
     if (!id) {

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     await connectToDB();
 
-    const url = new URL(req.url);
+    const url = req.nextUrl;
     const add = url.searchParams.get("add");
 
     const createUser = async () => {

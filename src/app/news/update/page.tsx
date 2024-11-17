@@ -40,23 +40,31 @@ export default function UpdateNews() {
   const { logout, isLoading: loading } = useAuth();
   const { userData: user } = useUserData();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [newsId, setNewsId] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(
+    null
+  );
 
   useEffect(() => {
-    const idFromParams = searchParams.get("newsId");
-    if (idFromParams) {
-      // Simpan ID ke localStorage
-      localStorage.setItem("newsId", idFromParams);
-      setNewsId(idFromParams);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setSearchParams(params);
+    }
+  }, []);
 
-      // Redirect tanpa parameter newsId
-      router.replace("/news/update");
-    } else {
-      // Ambil ID dari localStorage jika tidak ada di URL
-      const storedNewsId = localStorage.getItem("newsId");
-      setNewsId(storedNewsId);
+  useEffect(() => {
+    if (searchParams) {
+      const idFromParams = searchParams.get("newsId");
+      if (idFromParams) {
+        localStorage.setItem("newsId", idFromParams);
+        setNewsId(idFromParams);
+
+        router.replace("/news/update");
+      } else {
+        const storedNewsId = localStorage.getItem("newsId");
+        setNewsId(storedNewsId);
+      }
     }
   }, [searchParams, router]);
 
@@ -79,7 +87,9 @@ export default function UpdateNews() {
         namaKomunitas: news.category || "",
         judul: news.title,
         gambarUrl: news.image,
-        kategori: news.category ? news.category.toLowerCase() : "peristiwa-lokal",
+        kategori: news.category
+          ? news.category.toLowerCase()
+          : "peristiwa-lokal",
         konten: news.content,
       });
       setIsLoaded(true);

@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     await connectToDB();
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     const id = searchParams.get("id");
 
     if (!id) {

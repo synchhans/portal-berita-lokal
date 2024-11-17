@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     await connectToDB();
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     const title = searchParams.get("title")
       ? decodeURIComponent(searchParams.get("title") as string)
       : null;
