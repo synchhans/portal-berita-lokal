@@ -12,8 +12,6 @@ interface UseUpdateNewsReturn {
   updateNews: (updatedNews: Partial<News>) => Promise<void>;
 }
 
-const API_URL = "http://localhost:3000/api/news";
-
 export default function useUpdateNews(): UseUpdateNewsReturn {
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,7 +23,7 @@ export default function useUpdateNews(): UseUpdateNewsReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}?id=${id}`, {
+      const response = await fetch(`/api/news?id=${id}`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -64,7 +62,7 @@ export default function useUpdateNews(): UseUpdateNewsReturn {
     };
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch("/api/news", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

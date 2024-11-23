@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { useAuth } from "../../../../utils/hook/useAuth";
