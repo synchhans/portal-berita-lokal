@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
 
     if (title) {
       query.title = { $regex: new RegExp(title, "i") };
+      query.status = "approved";
     }
 
     const newsQuery = await NewsModel.find(query).limit(10);
