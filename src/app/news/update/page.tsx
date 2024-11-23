@@ -77,7 +77,9 @@ export default function UpdateNews() {
 
   useEffect(() => {
     if (newsId && !isFetched) {
-      fetchNewsById(newsId!).finally(() => setIsFetched(true));
+      fetchNewsById(newsId!)
+        .then(() => setIsFetched(true))
+        .catch((err) => console.error("Error fetching news", err));
     }
   }, [newsId, isFetched, fetchNewsById]);
 

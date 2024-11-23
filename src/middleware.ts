@@ -48,7 +48,9 @@ export async function middleware(req: NextRequest) {
       req.nextUrl.pathname === "/news/update" ||
       req.nextUrl.pathname === "/profile"
     ) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      if (!token) {
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
     }
 
     return NextResponse.next();
@@ -62,7 +64,9 @@ export async function middleware(req: NextRequest) {
       req.nextUrl.pathname === "/news/update" ||
       req.nextUrl.pathname === "/profile"
     ) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      if (!token) {
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
     }
 
     return NextResponse.next();

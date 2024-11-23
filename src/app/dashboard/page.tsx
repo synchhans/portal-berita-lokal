@@ -6,7 +6,15 @@ import DashboardUser from "../components/pages/user/Dashboard";
 import useUserData from "../../../utils/hook/useUserData";
 
 export default function Dashboard() {
-  const { role, userData } = useUserData();
+  const { role, userData, isLoading } = useUserData();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!role || !userData) {
+    return <div>Error: Unable to load user data</div>;
+  }
 
   const renderDashboardContent = () => {
     switch (role) {

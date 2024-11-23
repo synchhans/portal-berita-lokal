@@ -95,6 +95,7 @@ export const useAuth = (): UseAuthReturn => {
       if (storedLocation) {
         const lokasi = JSON.parse(storedLocation);
         const userId = responseData.user.id;
+        const token = responseData.token;
 
         const checkLocationResponse = await fetch(`/api/authors?id=${userId}`);
         const user = await checkLocationResponse.json();
@@ -107,7 +108,7 @@ export const useAuth = (): UseAuthReturn => {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${responseData.token}`,
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               userId,
