@@ -20,7 +20,6 @@ const ApprovedAdmin: React.FC<DashboardProps> = ({ user }) => {
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
-      {/* Sidebar */}
       <button
         className="fixed top-4 left-4 z-50 lg:hidden"
         onClick={() => setSidebarOpen(true)}

@@ -1,7 +1,7 @@
 "use client";
 import { FiUser, FiLogOut } from "react-icons/fi";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../../utils/hook/useAuth";
 import useUserData from "../../../utils/hook/useUserData";
 import useFetchUser from "../../../utils/hook/useFetchUser";
@@ -251,7 +251,6 @@ export default function Profile() {
             <div>
               <label className="block font-medium">Topik Yang disukai</label>
               <div className="flex items-center space-x-2 mt-2">
-                {/* Checkboxes for each topic */}
                 {["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"].map(
                   (topic, index) => (
                     <div key={index} className="flex items-center">

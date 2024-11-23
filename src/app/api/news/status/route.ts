@@ -33,7 +33,6 @@ export async function PATCH(req: NextRequest) {
 
     const newsIds = Array.isArray(newsId) ? newsId : [newsId];
 
-    // Fetch and update each news item
     const updatedNews = [];
     for (const id of newsIds) {
       const news = await NewsModel.findById(id);

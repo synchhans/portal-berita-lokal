@@ -14,7 +14,7 @@ const useFetchUser = (userId: string | undefined): UserFetchResponse => {
     if (!userId) {
       setUserData(null);
       setIsLoading(false);
-      return; // Exit early if userId is not provided
+      return;
     }
 
     const fetchUser = async () => {
@@ -30,7 +30,7 @@ const useFetchUser = (userId: string | undefined): UserFetchResponse => {
         setUserData(data);
       } catch (error) {
         console.error("Error fetching user:", error);
-        setUserData(null); // Handle error by setting userData to null
+        setUserData(null);
       } finally {
         setIsLoading(false);
       }

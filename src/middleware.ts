@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
+const needsAuthPaths = [
+  "/dashboard",
+  "/news/approved",
+  "/news/create",
+  "/news/update",
+  "/profile",
+];
+
+const redirectTo = (url: string, req: NextRequest) => {
+  return NextResponse.redirect(new URL(url, req.url));
+};
+
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("secure_token")?.value;
   const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -26,11 +38,12 @@ export async function middleware(req: NextRequest) {
         role: payload.role,
         image: payload.image,
       };
+
       if (
         req.nextUrl.pathname === "/login" ||
         req.nextUrl.pathname === "/register"
       ) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+        return redirectTo("/dashboard", req);
       }
 
       const response = NextResponse.next();
@@ -41,32 +54,16 @@ export async function middleware(req: NextRequest) {
       return response;
     }
 
-    if (
-      req.nextUrl.pathname === "/dashboard" ||
-      req.nextUrl.pathname === "/news/approved" ||
-      req.nextUrl.pathname === "/news/create" ||
-      req.nextUrl.pathname === "/news/update" ||
-      req.nextUrl.pathname === "/profile"
-    ) {
-      if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
+    if (needsAuthPaths.includes(req.nextUrl.pathname)) {
+      return redirectTo("/login", req);
     }
 
     return NextResponse.next();
   } catch (error) {
     console.error("Authentication error:", error);
 
-    if (
-      req.nextUrl.pathname === "/dashboard" ||
-      req.nextUrl.pathname === "/news/approved" ||
-      req.nextUrl.pathname === "/news/create" ||
-      req.nextUrl.pathname === "/news/update" ||
-      req.nextUrl.pathname === "/profile"
-    ) {
-      if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
+    if (needsAuthPaths.includes(req.nextUrl.pathname)) {
+      return redirectTo("/login", req);
     }
 
     return NextResponse.next();

@@ -80,18 +80,24 @@ export const useAuth = (): UseAuthReturn => {
         body: JSON.stringify(data),
       });
 
+      console.log("API response:", res);
+
       if (!res.ok) {
         const responseData = await res.json();
+        console.error("Login failed:", responseData.error);
         throw new Error(responseData.error || "Failed to login");
       }
 
       const responseData = await res.json();
+      console.log("Login successful, responseData:", responseData);
 
       Cookies.set("token", responseData.token, { expires: 1, path: "/" });
 
       sessionStorage.setItem("alertMessage", "Login successful");
 
       const storedLocation = localStorage.getItem("lokasi");
+      console.log("Stored location:", storedLocation);
+
       if (storedLocation) {
         const lokasi = JSON.parse(storedLocation);
         const userId = responseData.user.id;
@@ -125,9 +131,11 @@ export const useAuth = (): UseAuthReturn => {
         }
       }
 
+      console.log("Navigating to dashboard...");
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred");
+      console.error("Login error:", err);
     } finally {
       setIsLoading(false);
     }

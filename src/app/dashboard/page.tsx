@@ -4,12 +4,13 @@ import DashboardAdmin from "../components/pages/admin/Dashboard";
 import DashboardProvider from "../components/pages/provider/Dashboard";
 import DashboardUser from "../components/pages/user/Dashboard";
 import useUserData from "../../../utils/hook/useUserData";
+import SkeletonDashboard from "../components/skeleton/SkeletonDashboard";
 
 export default function Dashboard() {
   const { role, userData, isLoading } = useUserData();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SkeletonDashboard />;
   }
 
   if (!role || !userData) {

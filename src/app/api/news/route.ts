@@ -53,37 +53,13 @@ export async function GET(req: NextRequest) {
     const news = await newsQuery.exec();
 
     if (news.length === 0) {
-      return NextResponse.json(
-        { message: "News not found" },
-        {
-          status: 404,
-          headers: {
-            "Access-Control-Allow-Origin": "https://portber.vercel.app",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-          },
-        }
-      );
+      return NextResponse.json({ message: "News not found" }, { status: 404 });
     }
 
-    return NextResponse.json(news, {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "https://portber.vercel.app",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    });
+    return NextResponse.json(news, { status: 200 });
   } catch (error) {
     console.error("Error get news:", error);
-    return NextResponse.json(
-      { error: "Error get news" },
-      {
-        status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "https://portber.vercel.app",
-          "Access-Control-Allow-Methods": "GET, OPTIONS",
-        },
-      }
-    );
+    return NextResponse.json({ error: "Error get news" }, { status: 500 });
   }
 }
 
@@ -157,18 +133,4 @@ export async function PATCH(req: NextRequest) {
     console.error("Error updating news:", error);
     return NextResponse.json({ error: "Error updating news" }, { status: 500 });
   }
-}
-
-export async function OPTIONS() {
-  return NextResponse.json(
-    {},
-    {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "https://portber.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    }
-  );
 }

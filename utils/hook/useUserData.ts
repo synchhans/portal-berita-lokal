@@ -17,30 +17,35 @@ const useUserData = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const userDataCookie = Cookies.get("user_data");
+    const fetchUserData = async () => {
+      const userDataCookie = Cookies.get("user_data");
 
-    if (userDataCookie) {
-      const parsedUserData = JSON.parse(userDataCookie) as UserData;
-      const roleFromCookie = parsedUserData.role;
-
-      if (
-        roleFromCookie === "admin" ||
-        roleFromCookie === "provider" ||
-        roleFromCookie === "user"
-      ) {
-        setRole(roleFromCookie);
-        setUserData(parsedUserData);
+      if (!userDataCookie) {
+        const res = await fetch("/dashboard", { method: "GET" });
+        if (res.ok) {
+          const refreshedUserData = Cookies.get("user_data");
+          if (refreshedUserData) {
+            const parsedData = JSON.parse(refreshedUserData) as UserData;
+            setUserData(parsedData);
+            setRole(parsedData.role);
+          } else {
+            Cookies.remove("secure_token");
+            Cookies.remove("token");
+            router.push("/login");
+          }
+        } else {
+          router.push("/login");
+        }
       } else {
-        Cookies.remove("secure_token");
-        Cookies.remove("user_data");
-        router.push("/login");
-        return;
+        const parsedData = JSON.parse(userDataCookie) as UserData;
+        setUserData(parsedData);
+        setRole(parsedData.role);
       }
-    } else {
-      router.push("/login");
-      return;
-    }
-    setIsLoading(false);
+
+      setIsLoading(false);
+    };
+
+    fetchUserData();
   }, [router]);
 
   return { role, userData, isLoading };
