@@ -158,26 +158,36 @@ export default function Header() {
               Checking
             </div>
           ) : isAuthenticated ? (
-            <Link
-              href="/dashboard"
-              className="bg-primary text-light px-4 py-2 rounded-full flex items-center gap-2 font-bold"
-            >
-              DASHBOARD
-            </Link>
+            <div>
+              <Link
+                href="/dashboard"
+                className="bg-primary text-light px-4 py-2 rounded-full flex items-center gap-2 font-bold"
+              >
+                DASHBOARD
+              </Link>
+              <Link
+                href="/profile"
+                className="bg-transparent border border-border px-4 py-2 rounded-full hover:bg-primary hover:text-light hover:border-light font-bold"
+              >
+                PROFILE
+              </Link>
+            </div>
           ) : (
-            <Link
-              href="/login"
-              className="bg-transparent border border-border px-4 py-2 rounded-full hover:bg-primary hover:text-light hover:border-light font-bold"
-            >
-              MASUK
-            </Link>
+            <div>
+              <Link
+                href="/login"
+                className="bg-transparent border border-border px-4 py-2 rounded-full hover:bg-primary hover:text-light hover:border-light font-bold"
+              >
+                MASUK
+              </Link>
+              <Link
+                href="/register"
+                className="bg-primary text-light px-4 py-2 rounded-full flex items-center gap-2 font-bold"
+              >
+                DAFTAR
+              </Link>
+            </div>
           )}
-          <Link
-            href="/register"
-            className="bg-primary text-light px-4 py-2 rounded-full flex items-center gap-2 font-bold"
-          >
-            DAFTAR
-          </Link>
         </div>
       </div>
 
