@@ -158,7 +158,7 @@ export default function Header() {
               Checking
             </div>
           ) : isAuthenticated ? (
-            <div>
+            <>
               <Link
                 href="/dashboard"
                 className="bg-primary text-light px-4 py-2 rounded-full flex items-center gap-2 font-bold"
@@ -171,9 +171,9 @@ export default function Header() {
               >
                 PROFILE
               </Link>
-            </div>
+            </>
           ) : (
-            <div>
+            <>
               <Link
                 href="/login"
                 className="bg-transparent border border-border px-4 py-2 rounded-full hover:bg-primary hover:text-light hover:border-light font-bold"
@@ -186,7 +186,7 @@ export default function Header() {
               >
                 DAFTAR
               </Link>
-            </div>
+            </>
           )}
         </div>
       </div>

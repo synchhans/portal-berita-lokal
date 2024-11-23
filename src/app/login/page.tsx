@@ -9,7 +9,7 @@ import AlertManager from "../components/AlertManager";
 export default function Login() {
   const { login, isLoading, error, validateInput, clearError } = useAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("@MonkeyDDragon1");
+  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
