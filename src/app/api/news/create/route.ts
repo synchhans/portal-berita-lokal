@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const user = await authenticate(req);
 
-    const { title, content, image, location, category, tags } =
+    const { title, content, image, location, category, tags, url } =
       await req.json();
 
     if (!title || !content || !image || !location || !category) {
@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       category,
       type: user.role,
       tags: tags,
+      url: url,
     });
 
     await newNews.save();

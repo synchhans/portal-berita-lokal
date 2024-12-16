@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -16,11 +16,10 @@ export default function Header() {
     handleSearchSubmit,
     searchResults,
     isLoading,
+    setSearchResults,
   } = useSearch();
-  const [translateX, setTranslateX] = useState(0);
+
   const categoryContainerRef = useRef<HTMLDivElement | null>(null);
-  const [showLeftButton, setShowLeftButton] = useState(false);
-  const [showRightButton, setShowRightButton] = useState(false);
 
   const { isAuthenticated, loading } = useAuthStatus();
 
@@ -54,35 +53,62 @@ export default function Header() {
     router.push(path);
   };
 
-  const updateScrollButtons = () => {
-    if (!categoryContainerRef.current) return;
-
-    const scrollWidth = categoryContainerRef.current.scrollWidth;
-    const containerWidth = categoryContainerRef.current.clientWidth;
-
-    setShowLeftButton(translateX < 0);
-    setShowRightButton(-translateX < scrollWidth - containerWidth);
-  };
-
-  useEffect(() => {
-    updateScrollButtons();
-  }, [translateX]);
-
   const handleScroll = (direction: "left" | "right") => {
     const scrollAmount = 200;
-    if (direction === "left") {
-      const newTranslateX = Math.min(translateX + scrollAmount, 0);
-      setTranslateX(newTranslateX);
-    } else if (direction === "right") {
-      const scrollWidth = categoryContainerRef.current?.scrollWidth || 0;
-      const containerWidth = categoryContainerRef.current?.clientWidth || 0;
-      const newTranslateX = Math.max(
-        translateX - scrollAmount,
-        -scrollWidth + containerWidth
-      );
-      setTranslateX(newTranslateX);
+    if (categoryContainerRef.current) {
+      const scrollLeft = categoryContainerRef.current.scrollLeft;
+      if (direction === "left") {
+        categoryContainerRef.current.scrollLeft = Math.max(
+          scrollLeft - scrollAmount,
+          0
+        );
+      } else if (direction === "right") {
+        const scrollWidth = categoryContainerRef.current.scrollWidth;
+        const containerWidth = categoryContainerRef.current.clientWidth;
+        categoryContainerRef.current.scrollLeft = Math.min(
+          scrollLeft + scrollAmount,
+          scrollWidth - containerWidth
+        );
+      }
     }
   };
+
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node) &&
+        resultsRef.current &&
+        !resultsRef.current.contains(event.target as Node)
+      ) {
+        setSearchResults([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setSearchResults]);
+
+  useEffect(() => {
+    if (categoryContainerRef.current) {
+      const activeCategory = Array.from(
+        categoryContainerRef.current.querySelectorAll(".btn-category")
+      ).find((element) =>
+        (element as HTMLElement).classList.contains("active")
+      );
+
+      if (activeCategory) {
+        categoryContainerRef.current.scrollLeft =
+          (activeCategory as HTMLElement).offsetLeft - 100;
+      }
+    }
+  }, [pathname]);
 
   return (
     <header className="flex flex-col justify-center text-center px-5">
@@ -107,7 +133,7 @@ export default function Header() {
           />
         </div>
 
-        <div className="w-full max-w-[450px] relative">
+        <div ref={searchRef} className="w-full max-w-[450px] relative">
           <form onSubmit={handleSearchSubmit} className="relative">
             <div className="search-bar rounded-3xl flex items-center justify-between border border-border focus-within:border-primary">
               <FaSearch className="text-hint fa-search ml-3" />
@@ -122,7 +148,10 @@ export default function Header() {
           </form>
 
           {searchResults.length > 0 && (
-            <div className="absolute top-14 left-0 right-0 z-10 bg-white border border-gray-200 max-h-[300px] overflow-y-auto shadow-lg rounded-lg">
+            <div
+              ref={resultsRef}
+              className="absolute top-14 left-0 right-0 z-10 bg-white border border-gray-200 max-h-[300px] overflow-y-auto shadow-lg rounded-lg"
+            >
               {isLoading ? (
                 <div className="p-4 text-center">Loading...</div>
               ) : (
@@ -193,20 +222,18 @@ export default function Header() {
 
       <div className="relative max-w-[445px] md:max-w-[700px] lg:max-w-[900px] mx-auto my-5">
         <div className="flex items-center">
-          {showLeftButton && (
-            <button
-              onClick={() => handleScroll("left")}
-              className="p-2 text-gray-600 hover:text-primary"
-            >
-              <FaChevronLeft size={20} />
-            </button>
-          )}
+          <button
+            onClick={() => handleScroll("left")}
+            className="p-2 text-gray-600 hover:text-primary"
+          >
+            <FaChevronLeft size={20} />
+          </button>
 
-          <div ref={categoryContainerRef} className="flex-1 overflow-hidden">
-            <div
-              className="flex flex-nowrap whitespace-nowrap items-center gap-1 transition-transform duration-300 ease-in-out"
-              style={{ transform: `translateX(${translateX}px)` }}
-            >
+          <div
+            ref={categoryContainerRef}
+            className="flex-1 overflow-hidden category-container"
+          >
+            <div className="flex flex-nowrap whitespace-nowrap items-center gap-1 transition-transform duration-300 ease-in-out">
               {categories.map(({ path, label }) => (
                 <a
                   key={path}
@@ -220,14 +247,12 @@ export default function Header() {
             </div>
           </div>
 
-          {showRightButton && (
-            <button
-              onClick={() => handleScroll("right")}
-              className="p-2 text-gray-600 hover:text-primary"
-            >
-              <FaChevronRight size={20} />
-            </button>
-          )}
+          <button
+            onClick={() => handleScroll("right")}
+            className="p-2 text-gray-600 hover:text-primary"
+          >
+            <FaChevronRight size={20} />
+          </button>
         </div>
       </div>
     </header>

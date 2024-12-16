@@ -17,4 +17,5 @@ export interface News extends Document {
   updatedAt: Date;
   publishedAt?: Date;
   ratings: Ratings;
+  url: String;
 }

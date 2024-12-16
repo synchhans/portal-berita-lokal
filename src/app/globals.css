@@ -123,3 +123,7 @@ body {
 .swiper-pagination-bullet-active {
   background-color: #ffffff !important;
 }
+
+.category-container {
+  transition: transform 0.8s ease-out;
+}

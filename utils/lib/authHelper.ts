@@ -15,7 +15,7 @@ export const authenticate = async (
       id: process.env.USER_DEV_ID!,
       role: process.env.USER_DEV_ROLE!,
       name: "Dev#0001",
-      image: "user.png",
+      image: "admin.png",
     };
   }
 

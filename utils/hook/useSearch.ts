@@ -62,5 +62,6 @@ export const useSearch = () => {
     handleSearchSubmit,
     searchResults,
     isLoading,
+    setSearchResults,
   };
 };

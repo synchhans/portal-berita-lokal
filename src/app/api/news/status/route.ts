@@ -8,15 +8,15 @@ export async function PATCH(req: NextRequest) {
     await connectToDB();
 
     const user = await authenticate(req);
-    const { newsId, status } = await req.json();
+    const { authorId, status } = await req.json();
 
-    if (user.role === "user") {
+    if (!user || user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
     }
 
-    if (!newsId || !status) {
+    if (!authorId || !status) {
       return NextResponse.json(
-        { error: "News ID and status are required." },
+        { error: "Author ID and status are required." },
         { status: 400 }
       );
     }
@@ -25,28 +25,18 @@ export async function PATCH(req: NextRequest) {
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
         {
-          error: "Invalid status.",
+          error:
+            "Invalid status. Valid statuses are 'pending', 'approved', 'rejected'.",
         },
         { status: 400 }
       );
     }
 
-    const newsIds = Array.isArray(newsId) ? newsId : [newsId];
-
-    const updatedNews = [];
-    for (const id of newsIds) {
-      const news = await NewsModel.findById(id);
-      if (!news) {
-        return NextResponse.json(
-          { error: `News with ID ${id} not found.` },
-          { status: 404 }
-        );
-      }
-
-      news.status = status;
-      await news.save();
-      updatedNews.push(news);
-    }
+    const updatedNews = await NewsModel.updateMany(
+      { author: authorId },
+      { $set: { status } },
+      { new: true }
+    );
 
     return NextResponse.json(
       { message: "News status updated successfully.", updatedNews },

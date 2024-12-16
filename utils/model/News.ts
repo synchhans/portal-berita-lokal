@@ -8,6 +8,7 @@ const NewsSchema = new Schema<News>(
     content: { type: String, required: true },
     image: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    url: { type: String },
     location: {
       lat: { type: Number, required: true },
       long: { type: Number, required: true },

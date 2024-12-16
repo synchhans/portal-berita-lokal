@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword,
         role,
+        image: role + ".png",
       });
 
       const newUser = await newUserDoc.save();
@@ -52,38 +53,11 @@ export async function POST(req: NextRequest) {
       );
     };
 
-    const createNews = async () => {
-      const { title, content, category, author } = await req.json();
-
-      if (!title || !content || !category || !author) {
-        return NextResponse.json(
-          { error: "Title, Content, Category, and Author are required." },
-          { status: 400 }
-        );
-      }
-
-      const newNewsDoc = new NewsModel({
-        title,
-        content,
-        category,
-        author,
-      });
-
-      const newNews = await newNewsDoc.save();
-
-      return NextResponse.json(
-        { message: "News added successfully", news: newNews },
-        { status: 201 }
-      );
-    };
-
     if (add === "users") {
       return await createUser();
-    } else if (add === "news") {
-      return await createNews();
     } else {
       return NextResponse.json(
-        { error: "Invalid add parameter. Use 'users' or 'news'." },
+        { error: "Invalid add parameter" },
         { status: 400 }
       );
     }
