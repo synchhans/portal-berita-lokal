@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "../../../../utils/lib/mongoose";
 import UserModel from "../../../../utils/model/User";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     await connectToDB();

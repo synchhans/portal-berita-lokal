@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import NewsModel from "../../../../../utils/model/News";
 import { connectToDB } from "../../../../../utils/lib/mongoose";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     await connectToDB();
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     const newsQuery = await NewsModel.find(query).limit(10);
 
-    if (newsQuery.length === 0) {
+    if (!newsQuery) {
       return NextResponse.json({ message: "News not found" }, { status: 404 });
     }
 
