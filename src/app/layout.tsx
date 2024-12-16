@@ -20,6 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta
+        name="google-site-verification"
+        content="g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8"
+      />
       <body
         className={`${expletusSans.variable} antialiased overflow-x-hidden`}
       >
