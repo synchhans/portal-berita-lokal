@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Portal Berita Lokal Indonesia",
   description:
     "This project aims to create a web-based local news portal that maintains the accuracy and quality of news, while providing an interactive and personalized user experience. By raising public awareness and encouraging participation in local journalism, I hope this portal will become a trusted source of information for the community.",
+  other: {
+    "google-site-verification": "g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8",
+  },
 };
 
 export default function RootLayout({
@@ -21,10 +24,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta
-        name="google-site-verification"
-        content="g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8"
-      />
       <body
         className={`${expletusSans.variable} antialiased overflow-x-hidden`}
       >
