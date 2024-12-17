@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://kabarlokal.vercel.app
+
+# Sitemaps
+Sitemap: https://kabarlokal.vercel.app/sitemap.xml
