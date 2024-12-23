@@ -79,5 +79,6 @@ export const config = {
     "/news/create",
     "/news/update",
     "/profile",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/dashboard/", "/profile/"],
     },
-    sitemap: "https://kabarlokal.vercel.app/sitemap.xml",
+    sitemap: "https://kabarlokal.vercel.app/sitemap.xml/",
   };
 }
