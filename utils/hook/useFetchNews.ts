@@ -24,9 +24,9 @@ const useFetchNews = (
       setIsLoading(true);
       setError(null);
       try {
-        const location: Location | null = fetchLocation
-          ? JSON.parse(localStorage.getItem("lokasi") || "null")
-          : null;
+        // const location: Location | null = fetchLocation
+        //   ? JSON.parse(localStorage.getItem("lokasi") || "null")
+        //   : null;
 
         const baseUrl = `/api/news`;
         const statusQuery = status ? `status=${status}` : "";
@@ -51,24 +51,24 @@ const useFetchNews = (
 
         let combinedNews: News[] = [];
 
-        if (location) {
-          const districtUrl = `${baseUrl}?${queryParams}&district=${
-            location.district
-          }${
-            location.regency ? `&regency=${location.regency}` : ""
-          }&limit=1000&skip=0`;
-          const districtNews = await fetchNewsWithDeduplication(districtUrl);
-          combinedNews = combinedNews.concat(districtNews);
-        }
+        // if (location) {
+        //   const districtUrl = `${baseUrl}?${queryParams}&district=${
+        //     location.district
+        //   }${
+        //     location.regency ? `&regency=${location.regency}` : ""
+        //   }&limit=1000&skip=0`;
+        //   const districtNews = await fetchNewsWithDeduplication(districtUrl);
+        //   combinedNews = combinedNews.concat(districtNews);
+        // }
 
-        if (combinedNews.length === 0 && location?.regency) {
-          const regencyUrl = `${baseUrl}?${queryParams}&regency=${location.regency}&limit=1000&skip=0`;
-          const regencyNews = await fetchNewsWithDeduplication(regencyUrl);
-          combinedNews = combinedNews.concat(regencyNews);
-        }
+        // if (combinedNews.length === 0 && location?.regency) {
+        //   const regencyUrl = `${baseUrl}?${queryParams}&regency=${location.regency}&limit=1000&skip=0`;
+        //   const regencyNews = await fetchNewsWithDeduplication(regencyUrl);
+        //   combinedNews = combinedNews.concat(regencyNews);
+        // }
 
         if (combinedNews.length === 0) {
-          const otherUrl = `${baseUrl}?${queryParams}&limit=1000&skip=0`;
+          const otherUrl = `${baseUrl}?${queryParams}&limit=25&skip=0`;
           const otherNews = await fetchNewsWithDeduplication(otherUrl);
           combinedNews = combinedNews.concat(otherNews);
         }
@@ -84,7 +84,7 @@ const useFetchNews = (
         } else {
           if (uniqueCombinedNews.length === 0) {
             const latestNewsUrl = `${baseUrl}?${queryParams}&limit=${
-              limit || 1000
+              limit || 25
             }`;
             const latestNews = await fetchNewsWithDeduplication(latestNewsUrl);
             setNewsData(latestNews.slice(0, limit || latestNews.length));

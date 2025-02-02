@@ -7,6 +7,7 @@ import useUserData from "../../../../utils/hook/useUserData";
 import useSessionStorage from "../../../../utils/hook/useSessionStorage";
 import useSubmitNews from "../../../../utils/hook/useSubmitNews";
 import { useRouter } from "next/navigation";
+import RichTextEditor from "@/app/vendor/RichTextEditor";
 
 interface NewsFormData {
   kategori: string;
@@ -141,6 +142,13 @@ export default function CreateNews() {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleRichTextChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      kontenBerita: value,
     }));
   };
 
@@ -449,14 +457,9 @@ export default function CreateNews() {
               <label className="block text-gray-600 font-medium mb-2">
                 Isi Berita<span className="text-red-500">*</span>
               </label>
-              <textarea
-                name="kontenBerita"
+              <RichTextEditor
                 value={formData.kontenBerita}
-                onChange={handleInputChange}
-                required
-                className="border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={4}
-                placeholder="Masukan konten berita di sini"
+                onChange={handleRichTextChange}
               />
               {errors.kontenBerita && (
                 <p className="text-red-600 text-sm">{errors.kontenBerita}</p>

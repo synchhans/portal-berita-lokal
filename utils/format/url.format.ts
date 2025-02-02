@@ -1,7 +1,7 @@
 export const formatForUrl = (category: string) => {
   return category
     .toLowerCase()
-    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+    .replace(/[.,/#!$%^&*;:{}=_`~()]/g, "")
     .replace(/\s+/g, "-");
 };
 

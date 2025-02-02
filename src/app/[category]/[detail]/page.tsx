@@ -6,6 +6,7 @@ import { FaRegStar } from "react-icons/fa";
 import Footer from "@/app/components/Footer";
 import { formatForUrl } from "../../../../utils/format/url.format";
 import SkeletonDetail from "@/app/components/skeleton/SkeletonDetail";
+import NewsDetail from "@/app/vendor/dangerouslySetInnerHTML";
 
 export default function Detail() {
   const params = useParams();
@@ -84,7 +85,7 @@ export default function Detail() {
             </div>
 
             <p className="text-gray-700 whitespace-pre-line leading-relaxed">
-              {newsDetail.content}
+              <NewsDetail content={newsDetail.content} />
             </p>
           </div>
 

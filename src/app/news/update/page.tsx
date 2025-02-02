@@ -6,6 +6,7 @@ import { useAuth } from "../../../../utils/hook/useAuth";
 import useUserData from "../../../../utils/hook/useUserData";
 import useSessionStorage from "../../../../utils/hook/useSessionStorage";
 import useUpdateNews from "../../../../utils/hook/useUpdateNews";
+import RichTextEditor from "@/app/vendor/RichTextEditor";
 
 interface NewsFormData {
   namaKomunitas: string;
@@ -109,6 +110,13 @@ export default function UpdateNews() {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleRichTextChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      konten: value,
     }));
   };
 
@@ -331,14 +339,10 @@ export default function UpdateNews() {
               <label className="block text-gray-600 font-medium mb-2">
                 Konten Berita<span className="text-red-500">*</span>
               </label>
-              <textarea
-                name="konten"
+              <RichTextEditor
                 value={formData.konten}
-                onChange={handleInputChange}
-                required
-                rows={6}
-                className="border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              ></textarea>
+                onChange={handleRichTextChange}
+              />
             </div>
 
             <button

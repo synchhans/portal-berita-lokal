@@ -8,15 +8,15 @@ export async function PATCH(req: NextRequest) {
     await connectToDB();
 
     const user = await authenticate(req);
-    const { authorId, status } = await req.json();
+    const { newsId, status } = await req.json();
 
     if (!user || user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
     }
 
-    if (!authorId || !status) {
+    if (!newsId || !status) {
       return NextResponse.json(
-        { error: "Author ID and status are required." },
+        { error: "News ID and status are required." },
         { status: 400 }
       );
     }
@@ -32,11 +32,14 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const updatedNews = await NewsModel.updateMany(
-      { author: authorId },
-      { $set: { status } },
-      { new: true }
+    const updatedNews = await NewsModel.updateOne(
+      { _id: newsId },
+      { $set: { status } }
     );
+
+    if (updatedNews.matchedCount === 0) {
+      throw new Error("Berita tidak ditemukan");
+    }
 
     return NextResponse.json(
       { message: "News status updated successfully.", updatedNews },

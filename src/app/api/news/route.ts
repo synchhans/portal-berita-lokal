@@ -33,13 +33,13 @@ export async function GET(req: NextRequest) {
     }
     if (authorId) query.author = authorId;
 
-    if (district) {
-      query["location.district"] = district;
-    }
+    // if (district) {
+    //   query["location.district"] = district;
+    // }
 
-    if (regency) {
-      query["location.regency"] = regency;
-    }
+    // if (regency) {
+    //   query["location.regency"] = regency;
+    // }
 
     if (id) {
       query._id = id;
