@@ -1,12 +1,12 @@
 "use client";
 import { useParams } from "next/navigation";
-import Header from "@/app/components/Header";
+import Header from "../../components/Header";
 import { useFetchDetailNews } from "../../../../utils/hook/useFetchDetailNews";
 import { FaRegStar } from "react-icons/fa";
-import Footer from "@/app/components/Footer";
+import Footer from "../../components/Footer";
 import { formatForUrl } from "../../../../utils/format/url.format";
-import SkeletonDetail from "@/app/components/skeleton/SkeletonDetail";
-import NewsDetail from "@/app/vendor/dangerouslySetInnerHTML";
+import SkeletonDetail from "../../components/skeleton/SkeletonDetail";
+import NewsDetail from "../../vendor/dangerouslySetInnerHTML";
 
 export default function Detail() {
   const params = useParams();

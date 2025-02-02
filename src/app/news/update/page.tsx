@@ -6,7 +6,7 @@ import { useAuth } from "../../../../utils/hook/useAuth";
 import useUserData from "../../../../utils/hook/useUserData";
 import useSessionStorage from "../../../../utils/hook/useSessionStorage";
 import useUpdateNews from "../../../../utils/hook/useUpdateNews";
-import RichTextEditor from "@/app/vendor/RichTextEditor";
+import RichTextEditor from "../../vendor/RichTextEditor";
 
 interface NewsFormData {
   namaKomunitas: string;

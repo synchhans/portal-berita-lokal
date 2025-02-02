@@ -7,7 +7,7 @@ import useUserData from "../../../../utils/hook/useUserData";
 import useSessionStorage from "../../../../utils/hook/useSessionStorage";
 import useSubmitNews from "../../../../utils/hook/useSubmitNews";
 import { useRouter } from "next/navigation";
-import RichTextEditor from "@/app/vendor/RichTextEditor";
+import RichTextEditor from "../../vendor/RichTextEditor";
 
 interface NewsFormData {
   kategori: string;
