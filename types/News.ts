@@ -11,7 +11,7 @@ export interface News extends Document {
   category: string;
   type: "user" | "provider";
   tags: string[];
-  status: "approved" | "rejected" | "pending";
+  status: "approved" | "pending";
   views: number;
   createdAt: Date;
   updatedAt: Date;

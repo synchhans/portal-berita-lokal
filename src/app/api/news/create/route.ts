@@ -59,6 +59,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const moderationResponse = await fetch(`${process.env.BASE_URL_WEB}/api/news/moderate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, content }),
+    });
+
+    if (!moderationResponse.ok) {
+      const errorBody = await moderationResponse.text();
+      console.error("Moderation API Error:", errorBody);
+      return NextResponse.json(
+        { error: "Failed to moderate content" },
+        { status: 500 }
+      );
+    }
+
+    const moderationData = await moderationResponse.json();
+    const isTextSafe = moderationData.isTextSafe;
+
+    const status = isTextSafe ? "approved" : "pending";
+
     const newNews: News = new NewsModel({
       title,
       title_seo,
@@ -70,6 +90,7 @@ export async function POST(req: NextRequest) {
       type: user.role,
       tags: tags,
       url: url,
+      status,
     });
 
     await newNews.save();
