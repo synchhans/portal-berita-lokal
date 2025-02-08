@@ -28,7 +28,7 @@ const Banner: React.FC<BannerSliderProps> = ({ slides }) => {
         className="w-full h-full"
       >
         {slides.map((slide) => (
-          <SwiperSlide key={slide._id as string}>
+          <SwiperSlide key={slide._id.toString()}>
             <div className="relative w-full h-full">
               <img
                 src={slide.image}
