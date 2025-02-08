@@ -39,6 +39,14 @@ export default function Category() {
     categoryStr.split("-").join(" ")
   );
 
+  if (error) {
+    return (
+      <div>
+        Error: {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-full">
       <Lokasi />

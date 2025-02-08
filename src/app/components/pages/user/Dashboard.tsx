@@ -21,7 +21,8 @@ const DashboardUser: React.FC<DashboardProps> = ({ user }) => {
     "pending",
     "",
     "",
-    user?.id
+    user?.id,
+    false,
   );
 
   return (

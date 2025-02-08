@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "../../types/User";
-import Cookies from "js-cookie";
 
 interface UseAuthReturn {
   login: (data: { email: string; password: string }) => Promise<void>;
@@ -80,8 +79,6 @@ export const useAuth = (): UseAuthReturn => {
         body: JSON.stringify(data),
       });
 
-      console.log("API response:", res);
-
       if (!res.ok) {
         const responseData = await res.json();
         console.error("Login failed:", responseData.error);
@@ -90,11 +87,7 @@ export const useAuth = (): UseAuthReturn => {
 
       const responseData = await res.json();
       console.log("Login successful, responseData:", responseData);
-
-      Cookies.set("token", responseData.token, { expires: 1, path: "/" });
-
       sessionStorage.setItem("alertMessage", "Login successful");
-
       const storedLocation = localStorage.getItem("lokasi");
       console.log("Stored location:", storedLocation);
 
@@ -104,11 +97,11 @@ export const useAuth = (): UseAuthReturn => {
         const token = responseData.token;
 
         const checkLocationResponse = await fetch(`/api/authors?id=${userId}`);
-        const user = await checkLocationResponse.json();
+        const data = await checkLocationResponse.json();
 
         if (
-          user.preferences.location.district !== lokasi.district ||
-          user.preferences.location.regency !== lokasi.regency
+          data.user.preferences.location.district !== lokasi.district ||
+          data.user.preferences.location.regency !== lokasi.regency
         ) {
           const updateLocationResponse = await fetch(`/api/authors/location`, {
             method: "PATCH",

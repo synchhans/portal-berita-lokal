@@ -23,32 +23,23 @@ export const useFetchDetailNews = (
   useEffect(() => {
     const fetchNewsDetail = async () => {
       try {
-        const response = await fetch(`/api/news?title=${title}`);
+        const response = await fetch(
+          `/api/authors?title=${encodeURIComponent(
+            title
+          )}&authorNewsLimit=${authorNewsLimit}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch news detail");
+        }
         const data = await response.json();
 
-        if (data && data.length > 0) {
-          const newsItem = data[0];
-          setNewsDetail(newsItem);
-
-          const authorResponse = await fetch(
-            `/api/authors?id=${newsItem.author}`
-          );
-          const authorData = await authorResponse.json();
-          setAuthor(authorData);
-
-          const moreNewsResponse = await fetch(
-            `/api/news?authorId=${newsItem.author}&limit=${authorNewsLimit}`
-          );
-          const authorNewsData = await moreNewsResponse.json();
-
-          if (authorNewsData && authorNewsData.length > 0) {
-            setMoreNewsByAuthor(authorNewsData);
-          } else {
-            setMoreNewsByAuthor([]);
-          }
-        } else {
-          router.push("/not-found");
+        if (!data.newsDetail || !data.author) {
+          throw new Error("Invalid response data");
         }
+
+        setNewsDetail(data.newsDetail);
+        setAuthor(data.author);
+        setMoreNewsByAuthor(data.moreNewsByAuthor || []);
       } catch (error) {
         console.error("Failed to fetch news:", error);
         router.push("/not-found");

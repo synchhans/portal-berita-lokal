@@ -1,26 +1,27 @@
+import { ObjectId } from "mongoose";
 import { useState } from "react";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const useDeleteNews = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const deleteNews = async (newsId: string) => {
+  const deleteNews = async (newsId: ObjectId) => {
     setLoading(true);
     setError(null);
 
-    const token = Cookies.get("token");
-    if (!token) {
-      setError("Token not found. Please log in again.");
-      setLoading(false);
-      return;
-    }
+    // const token = Cookies.get("token");
+    // if (!token) {
+    //   setError("Token not found. Please log in again.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
       const response = await fetch(`/api/news?id=${newsId}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });

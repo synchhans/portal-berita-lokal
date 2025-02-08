@@ -1,26 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "../../../../utils/lib/mongoose";
-import { authenticate } from "../../../../utils/lib/authHelper";
+// import { authenticate } from "../../../../utils/lib/authHelper";
 import UserModel from "../../../../utils/model/User";
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await authenticate(req);
+    // const user = await authenticate(req);
 
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
-    }
+    // if (user.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    // }
 
-    const data = await UserModel.find();
-
+    const data = await UserModel.find({}, { password: 0 });
     return NextResponse.json(
-      {
-        message: "Get data account successfully.",
-        user: data,
-      },
-      {
-        status: 200,
-      }
+      { message: "Get data account successfully.", users: data },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Get data Account error:", error);
@@ -32,14 +26,13 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     await connectToDB();
+    // const user = await authenticate(req);
 
-    const user = await authenticate(req);
+    // if (user.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    // }
+
     const { userId, role } = await req.json();
-
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
-    }
-
     if (!userId || !role) {
       return NextResponse.json(
         { error: "User ID and role are required." },
@@ -67,7 +60,7 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Error updating user role:", error);
     const message =
-      (error as { message?: string }).message || "An error occurred";
-    return NextResponse.json({ message }, { status: 400 });
+      (error as { message?: string }).message || "An error occurred.";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

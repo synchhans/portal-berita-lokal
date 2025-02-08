@@ -20,6 +20,10 @@ export default function Detail() {
     return <SkeletonDetail />;
   }
 
+  if (!newsDetail) {
+    return <div>News not found.</div>;
+  }
+
   return (
     <div className="flex flex-col w-full max-w-full px-4 lg:px-0">
       <Header />

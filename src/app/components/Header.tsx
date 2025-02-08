@@ -111,7 +111,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="flex flex-col justify-center text-center px-5">
+    <header className="flex flex-col justify-center text-center md:px-5">
       <div className="flex flex-col lg:flex-row justify-center text-center mt-5 items-center gap-y-2 lg:gap-x-9 lg:h-[50px] search-bar">
         <Link href="/">
           <Image
@@ -133,7 +133,7 @@ export default function Header() {
           />
         </div>
 
-        <div ref={searchRef} className="w-full max-w-[450px] relative">
+        <div ref={searchRef} className="w-full max-w-[450px] relative px-5 md:px-0">
           <form onSubmit={handleSearchSubmit} className="relative">
             <div className="search-bar rounded-3xl flex items-center justify-between border border-border focus-within:border-primary">
               <FaSearch className="text-hint fa-search ml-3" />
@@ -150,7 +150,7 @@ export default function Header() {
           {searchResults.length > 0 && (
             <div
               ref={resultsRef}
-              className="absolute top-14 left-0 right-0 z-10 bg-white border border-gray-200 max-h-[300px] overflow-y-auto shadow-lg rounded-lg"
+              className="absolute left-0 right-0 mx-8 md:mx-0 z-10 bg-white border-gray-200 max-h-[300px] overflow-y-auto shadow-lg rounded-lg"
             >
               {isLoading ? (
                 <div className="p-4 text-center">Loading...</div>
@@ -165,7 +165,7 @@ export default function Header() {
                   >
                     <div className="flex items-start space-x-1">
                       <div className="flex-1">
-                        <h3 className="font-semibold line-clamp-1">
+                        <h3 className="font-semibold line-clamp-2">
                           {news.title}
                         </h3>
                         <p className="text-gray-500 text-sm">
@@ -220,8 +220,8 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="relative max-w-[445px] md:max-w-[700px] lg:max-w-[900px] mx-auto my-5">
-        <div className="flex items-center">
+      <div className="relative max-w-[445px] md:max-w-[700px] lg:max-w-[920px] mx-auto my-5">
+        <div className="flex items-center ">
           <button
             onClick={() => handleScroll("left")}
             className="p-2 text-gray-600 hover:text-primary"

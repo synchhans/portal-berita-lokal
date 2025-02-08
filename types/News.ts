@@ -1,12 +1,13 @@
-import { Document, Schema } from "mongoose";
+import { Document, ObjectId, Schema } from "mongoose";
 import { Ratings } from "./Ratings";
 
 export interface News extends Document {
+  _id: ObjectId;
   title: string;
   title_seo: string;
   content: string;
   image: string;
-  author: Schema.Types.ObjectId;
+  author: ObjectId;
   location: Location;
   category: string;
   type: "user" | "provider";

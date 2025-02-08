@@ -1,71 +1,72 @@
-import { NextRequest } from "next/server";
-import { JWTPayload, jwtVerify, JWTVerifyResult } from "jose";
+import { JWTPayload, jwtVerify } from "jose";
+import { NextRequest, NextResponse } from "next/server";
 
-export const authenticate = async (
-  req: NextRequest
-): Promise<AuthenticatedUser> => {
-  const token = req.headers.get("Authorization")?.split(" ")[1];
-
-  if (!token) throw new Error("No token provided");
-
-  const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!);
-
-  if (token === "dev.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dev") {
-    return {
-      id: process.env.USER_DEV_ID!,
-      role: process.env.USER_DEV_ROLE!,
-      name: "Dev#0001",
-      image: "admin.png",
-    };
-  }
-
+export const verifyJwt = async (token: string): Promise<JWTPayload> => {
   try {
-    const { payload } = (await jwtVerify(token, secretKey)) as JWTVerifyResult;
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+      throw new Error(
+        "JWT_SECRET is not defined in the environment variables."
+      );
+    }
+    const secretKey = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secretKey);
 
     if (
       !payload ||
-      typeof payload !== "object" ||
-      !("id" in payload) ||
-      !("role" in payload)
+      typeof payload.id !== "string" ||
+      typeof payload.role !== "string" ||
+      typeof payload.name !== "string" ||
+      typeof payload.image !== "string"
     ) {
-      throw new Error("Invalid token");
-    }
-
-    return payload as AuthenticatedUser;
-  } catch (error) {
-    if (error instanceof Error && error.message === "JWT expired") {
-      throw new Error("Token has expired");
-    }
-    throw new Error("Invalid token");
-  }
-};
-
-export const verifyJwt = async (
-  token: string,
-  secret: string
-): Promise<JWTPayload> => {
-  const secretKey = new TextEncoder().encode(secret);
-
-  try {
-    const { payload } = (await jwtVerify(token, secretKey)) as JWTVerifyResult;
-
-    if (
-      !payload ||
-      typeof payload !== "object" ||
-      !("id" in payload) ||
-      !("role" in payload)
-    ) {
+      console.error("Invalid token payload:", payload);
       throw new Error("Invalid token payload");
     }
 
-    return payload as JWTPayload;
+    console.log("Token verified successfully for user:", payload.id);
+    return payload;
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "JWT expired") {
+        console.error("Token has expired");
         throw new Error("Token has expired");
       }
+      console.error("Invalid token:", error.message);
       throw new Error("Invalid token");
     }
+    console.error("Unexpected error during token verification");
     throw new Error("Token verification failed");
+  }
+};
+
+export const deleteCookie = (response: NextResponse, name: string) => {
+  response.cookies.set(name, "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/",
+    expires: new Date(0),
+  });
+};
+
+export const authenticate = async (req: NextRequest): Promise<JWTPayload> => {
+  try {
+    let token = req.cookies.get("secure_token")?.value;
+
+    if (!token) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new Error("Missing or invalid token.");
+      }
+      token = authHeader.split(" ")[1];
+    }
+
+    const payload = await verifyJwt(token);
+
+    console.log("User authenticated successfully:", payload.id);
+    return payload;
+  } catch (error) {
+    console.error("Authentication failed:", (error as Error).message);
+    throw new Error("Authentication failed: Invalid or expired token.");
   }
 };

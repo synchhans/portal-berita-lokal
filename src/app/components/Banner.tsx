@@ -33,14 +33,14 @@ const Banner: React.FC<BannerSliderProps> = ({ slides }) => {
               <img
                 src={slide.image}
                 alt={slide.title}
-                className="w-full h-full object-cover brightness-75"
+                className="w-full h-full object-cover object-center brightness-75"
               />
-              <div className="absolute bottom-12 left-6 m-8 text-white">
+              <div className="absolute bottom-12 left-1.5 mx-10 text-white">
                 <p className="text-lg font-bold">Featured</p>
-                <p className="text-3xl md:text-4xl font-bold overflow-hidden text-ellipsis line-clamp-2">
+                <p className="text-3xl md:text-4xl font-bold overflow-hidden align-middle text-ellipsis line-clamp-2">
                   {slide.title}
                 </p>
-                <p className="text-lg">
+                <p className="text-lg line-clamp-1">
                   {new Date(slide.updatedAt).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "short",

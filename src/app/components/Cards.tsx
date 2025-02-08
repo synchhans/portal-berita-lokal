@@ -3,6 +3,7 @@ import { formatForUrl } from "../../../utils/format/url.format";
 import { News } from "../../../types/News";
 import useApproveNews from "../../../utils/hook/useApproveNews";
 import useDeleteNews from "../../../utils/hook/useDeleteNews";
+import { ObjectId } from "mongoose";
 
 interface CardsProps {
   data: News[];
@@ -27,24 +28,24 @@ const Cards: React.FC<CardsProps> = ({
 }) => {
   const { changeNews } = useApproveNews();
 
-  const handleApprove = async (e: React.MouseEvent, itemId: string) => {
+  const handleApprove = async (e: React.MouseEvent, itemId: ObjectId) => {
     e.preventDefault();
     changeNews(itemId, "approved");
   };
 
-  const handleUpdate = async (e: React.MouseEvent, itemId: string) => {
+  const handleUpdate = async (e: React.MouseEvent, itemId: ObjectId) => {
     e.preventDefault();
     window.open(`/news/update?newsId=${itemId}`, "_blank");
   };
 
-  const handleCancle = async (e: React.MouseEvent, itemId: string) => {
+  const handleCancle = async (e: React.MouseEvent, itemId: ObjectId) => {
     e.preventDefault();
     changeNews(itemId, "pending");
   };
 
   const { loading: loadingDelete, error, deleteNews } = useDeleteNews();
 
-  const handleDelete = async (itemId: string) => {
+  const handleDelete = async (itemId: ObjectId) => {
     if (window.confirm("Are you sure you want to delete this news?")) {
       await deleteNews(itemId);
     }
@@ -131,7 +132,7 @@ const Cards: React.FC<CardsProps> = ({
                 <div className="p-4 flex justify-around border-t">
                   {role === "admin" && showApprove && (
                     <button
-                      onClick={(e) => handleApprove(e, item._id as string)}
+                      onClick={(e) => handleApprove(e, item._id)}
                       className="text-green-500 font-semibold hover:underline"
                     >
                       Setujui
@@ -139,7 +140,7 @@ const Cards: React.FC<CardsProps> = ({
                   )}
                   {role !== "provider" && showUpdate && (
                     <button
-                      onClick={(e) => handleUpdate(e, item._id as string)}
+                      onClick={(e) => handleUpdate(e, item._id)}
                       className="text-orange-500 font-semibold hover:underline"
                     >
                       Update
@@ -147,7 +148,7 @@ const Cards: React.FC<CardsProps> = ({
                   )}
                   {role !== "user" && showCancel && (
                     <button
-                      onClick={(e) => handleCancle(e, item._id as string)}
+                      onClick={(e) => handleCancle(e, item._id)}
                       className="text-red-500 font-semibold hover:underline"
                     >
                       Batalkan
@@ -168,7 +169,7 @@ const Cards: React.FC<CardsProps> = ({
                   )}
                   {role !== "provider" && showDelete && (
                     <button
-                      onClick={(e) => handleDelete(item._id as string)}
+                      onClick={(e) => handleDelete(item._id)}
                       className="text-red-500 font-semibold hover:underline"
                     >
                       Hapus

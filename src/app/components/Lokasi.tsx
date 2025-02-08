@@ -12,8 +12,6 @@ interface LokasiProps {
 const Lokasi: React.FC<LokasiProps> = ({
   defaultMessage = "Silakan atur lokasi Anda untuk menampilkan berita lokal",
 }) => {
-  const API_KEY_OPEN_KAGE = process.env.NEXT_PUBLIC_API_KEY_OPEN_KAGE || "";
-
   const { isAuthenticated, loading: authLoading } = useAuthStatus();
 
   const {
@@ -23,7 +21,7 @@ const Lokasi: React.FC<LokasiProps> = ({
     locationChangeCount,
     handleSetLocation,
     isCooldown,
-  } = useLokasi(API_KEY_OPEN_KAGE, isAuthenticated);
+  } = useLokasi(isAuthenticated);
 
   const openGoogleMaps = (query: string) => {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -57,10 +55,10 @@ const Lokasi: React.FC<LokasiProps> = ({
     isUserLimitReached;
 
   return (
-    <div className="flex mx-auto justify-center items-center bg-[#212121] text-white h-16 space-x-2 p-5">
+    <div className="flex mx-auto md:justify-center justify-between items-center bg-[#212121] text-white h-16 space-x-2 p-5">
       {lokasi ? (
         <>
-          <h1 className="mr-5">
+          <h1 className="mr-5 md:text-1xl sm:text-xl line-clamp-1">
             Lokasi Anda saat ini:{" "}
             <u
               className="cursor-pointer hover:underline"
@@ -100,7 +98,7 @@ const Lokasi: React.FC<LokasiProps> = ({
         disabled={isDisabled}
       >
         <FaMapMarkerAlt className="text-lg" />
-        <span>
+        <span className="line-clamp-1">
           {lokasi ? "Ubah Lokasi" : "Atur Lokasi"}
           {isGuestLimitReached ? " (Silakan login terlebih dahulu)" : ""}
           {isUserLimitReached ? " (Tunggu 1 Jam)" : ""}

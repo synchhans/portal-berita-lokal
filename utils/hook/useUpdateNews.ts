@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Cookies from "js-cookie";
 import { News } from "../../types/News";
 import { useRouter } from "next/navigation";
 import { formatForUrl } from "../format/url.format";
@@ -54,7 +53,6 @@ export default function useUpdateNews(): UseUpdateNewsReturn {
 
     const title_seo = formatForUrl(updatedNews.title);
 
-    const token = Cookies.get("token");
 
     const newNews = {
       ...updatedNews,
@@ -66,7 +64,7 @@ export default function useUpdateNews(): UseUpdateNewsReturn {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newNews),
       });

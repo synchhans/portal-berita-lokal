@@ -5,9 +5,9 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
-  await connectToDB();
-
   try {
+    await connectToDB();
+
     const { email, password } = await req.json();
 
     if (!email || !password) {
@@ -17,8 +17,11 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log(`Attempting login for email: ${email}`);
+
     const user = await UserModel.findOne({ email });
     if (!user) {
+      console.warn(`User not found for email: ${email}`);
       return NextResponse.json(
         { error: "Invalid email or password." },
         { status: 401 }
@@ -27,6 +30,7 @@ export async function POST(req: Request) {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.warn(`Password mismatch for email: ${email}`);
       return NextResponse.json(
         { error: "Invalid email or password." },
         { status: 401 }
@@ -45,6 +49,7 @@ export async function POST(req: Request) {
       .setExpirationTime("1h")
       .sign(secretKey);
 
+    console.log(`Login successful for user ID: ${user._id}`);
     const response = NextResponse.json(
       { message: "Login successful", token, user: { id: user._id } },
       { status: 200 }
@@ -60,7 +65,10 @@ export async function POST(req: Request) {
 
     return response;
   } catch (error) {
-    console.error("Error logging in:", error);
-    return NextResponse.json({ error: "Error logging in" }, { status: 500 });
+    console.error("Unexpected error during login:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred during login." },
+      { status: 500 }
+    );
   }
 }

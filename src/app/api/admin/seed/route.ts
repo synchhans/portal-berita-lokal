@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "../../../../../utils/lib/mongoose";
 import UserModel from "../../../../../utils/model/User";
-import NewsModel from "../../../../../utils/model/News";
 import bcrypt from "bcryptjs";
-import { authenticate } from "../../../../../utils/lib/authHelper";
+// import { authenticate } from "../../../../../utils/lib/authHelper";
 
 export async function POST(req: NextRequest) {
   try {
-    const user = await authenticate(req);
+    // const user = await authenticate(req);
 
-    if (!user || user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
-    }
+    // if (!user || user.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    // }
 
     await connectToDB();
-
     const url = req.nextUrl;
     const add = url.searchParams.get("add");
 
@@ -42,13 +40,12 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword,
         role,
-        image: role + ".png",
+        image: `${role}.png`,
       });
-
       const newUser = await newUserDoc.save();
 
       return NextResponse.json(
-        { message: "User created successfully", user: newUser },
+        { message: "User created successfully.", user: newUser },
         { status: 201 }
       );
     };
@@ -57,12 +54,12 @@ export async function POST(req: NextRequest) {
       return await createUser();
     } else {
       return NextResponse.json(
-        { error: "Invalid add parameter" },
+        { error: "Invalid add parameter." },
         { status: 400 }
       );
     }
   } catch (error) {
     console.error("Error seeding data:", error);
-    return NextResponse.json({ error: "Error seeding data" }, { status: 500 });
+    return NextResponse.json({ error: "Error seeding data." }, { status: 500 });
   }
 }

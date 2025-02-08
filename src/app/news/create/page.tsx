@@ -50,13 +50,21 @@ export default function CreateNews() {
   const { userData: user } = useUserData();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const API_KEY_OPEN_KAGE = process.env.NEXT_PUBLIC_API_KEY_OPEN_KAGE;
+  // const API_KEY_OPEN_KAGE = process.env.NEXT_PUBLIC_API_KEY_OPEN_KAGE;
 
   const { submitNews, loading: loadingSubmit } = useSubmitNews();
 
   const handleLogout = async () => {
     await logout();
   };
+
+  useEffect(() => {
+    const storedData = sessionStorage.getItem("formData");
+    if (storedData) {
+      console.log("Data loaded from sessionStorage:", JSON.parse(storedData));
+      setFormData(JSON.parse(storedData));
+    }
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Errors = {};
@@ -66,18 +74,18 @@ export default function CreateNews() {
     const titleWords = judul.split(/\s+/).length;
     const contentWords = kontenBerita.split(/\s+/).length;
 
-    if (titleWords < 8)
-      newErrors.judul = "Judul harus terdiri dari minimal 8 kata.";
+    if (titleWords < 4)
+      newErrors.judul = "Judul harus terdiri dari minimal 4 kata.";
     if (!kategori) newErrors.kategori = "Kategori harus diisi.";
     if (!/\.(png|jpg|jpeg)$/i.test(gambarUrl))
       newErrors.gambarUrl = "Gambar harus berekstensi .png, .jpg, atau .jpeg.";
-    if (kategori === "komunitas" && namaKomunitas.length < 5) {
+    if (kategori === "Komunitas" && namaKomunitas.length < 3) {
       newErrors.namaKomunitas =
-        "Nama komunitas harus terdiri dari minimal 5 karakter.";
+        "Nama komunitas harus terdiri dari minimal 3 karakter.";
     }
-    if (contentWords < 35 || contentWords > 200) {
+    if (contentWords < 15 || contentWords > 1000) {
       newErrors.kontenBerita =
-        "Konten berita harus terdiri dari minimal 35 kata dan maksimal 200 kata.";
+        "Konten berita harus terdiri dari minimal 15 kata dan maksimal 1000 kata.";
     }
 
     if (!lokasi) {
@@ -100,16 +108,16 @@ export default function CreateNews() {
     }
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const cleanedTags = tags.slice(0, tags.length - 1);
+    const cleanedTags = tags.filter((tag) => tag.trim() !== "");
 
     try {
       await submitNews({
         title: formData.judul,
         category: formData.kategori,
-        image: formData.gambarUrl,
+        image: `https://${formData.gambarUrl}`,
         content: formData.kontenBerita,
         location: lokasi
           ? lokasi
@@ -136,7 +144,7 @@ export default function CreateNews() {
   };
 
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -155,53 +163,98 @@ export default function CreateNews() {
   const handleAmbilLokasi = () => {
     setLoading(true);
     setErrorMessage(null);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
 
-          try {
-            const response = await fetch(
-              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${API_KEY_OPEN_KAGE}`
-            );
-
-            if (!response.ok) {
-              throw new Error("Gagal mengambil data lokasi.");
-            }
-
-            const data = await response.json();
-
-            if (data.results && data.results.length > 0) {
-              const locationData = data.results[0].components;
-              const newLocation: LokasiType = {
-                lat: latitude,
-                long: longitude,
-                district: locationData.village || "Unknown",
-                regency: locationData.county || "Unknown",
-                country: locationData.country || "Unknown",
-              };
-
-              setLokasi(newLocation);
-              localStorage.setItem("lokasi", JSON.stringify(newLocation));
-            } else {
-              setErrorMessage("Lokasi tidak ditemukan.");
-            }
-          } catch (error) {
-            setErrorMessage("Terjadi kesalahan saat mengambil lokasi.");
-            console.error("Error fetching location:", error);
-          } finally {
-            setLoading(false);
-          }
-        },
-        (error) => {
-          setErrorMessage("Error getting location: " + error.message);
-          setLoading(false);
-        }
-      );
-    } else {
-      setErrorMessage("Geolocation is not supported by this browser.");
+    const handleError = (message: string) => {
+      setErrorMessage(message);
       setLoading(false);
+    };
+
+    const fetchLocationData = async (latitude: number, longitude: number) => {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=18&addressdetails=1`;
+        const response = await fetch(url, {
+          headers: {
+            "User-Agent": "PortalBeritaLokal/1.0 muhamadfarhan.inc@gmail.com",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data lokasi.");
+        }
+
+        const data = await response.json();
+        if (data && data.address) {
+          const address = data.address;
+
+          const district =
+            address.village ||
+            address.town ||
+            address.city ||
+            address.suburb ||
+            "Unknown";
+
+          const regency =
+            address.county ||
+            address.state_district ||
+            address.city ||
+            "Unknown";
+
+          const country = address.country || "Unknown";
+
+          const newLocation = {
+            lat: latitude,
+            long: longitude,
+            district,
+            regency,
+            country,
+          };
+          setLokasi(newLocation);
+          localStorage.setItem("lokasi", JSON.stringify(newLocation));
+        } else {
+          handleError("Lokasi tidak ditemukan.");
+        }
+      } catch (error) {
+        handleError("Terjadi kesalahan saat mengambil lokasi.");
+        console.error("Error fetching location:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!navigator.permissions) {
+      handleError("Browser tidak mendukung API Permissions.");
+      return;
     }
+
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((permissionStatus) => {
+        if (permissionStatus.state === "denied") {
+          handleError(
+            "Izin lokasi ditolak. Silakan aktifkan izin lokasi di browser."
+          );
+        } else if (["granted", "prompt"].includes(permissionStatus.state)) {
+          if (!navigator.geolocation) {
+            handleError("Geolocation is not supported by this browser.");
+            return;
+          }
+
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              await fetchLocationData(latitude, longitude);
+            },
+            (error) => {
+              handleError("Error getting location: " + error.message);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 0,
+            }
+          );
+        }
+      });
   };
 
   const handleTagChange = (index: number, value: string) => {
@@ -404,15 +457,19 @@ export default function CreateNews() {
                 className="border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Pilih Kategori</option>
-                <option value="peristiwa-lokal">Peristiwa Lokal</option>
-                <option value="komunitas">Komunitas</option>
+                <option value="Peristiwa Lokal">Peristiwa Lokal</option>
+                <option value="Komunitas">Komunitas</option>
               </select>
               {errors.kategori && (
                 <p className="text-red-600 text-sm">{errors.kategori}</p>
               )}
             </div>
 
-            {formData.kategori === "komunitas" && (
+            <div
+              style={{
+                display: formData.kategori === "Komunitas" ? "block" : "none",
+              }}
+            >
               <div className="mb-5">
                 <label className="block text-gray-600 font-medium mb-2">
                   Nama Komunitas<span className="text-red-500">*</span>
@@ -422,7 +479,6 @@ export default function CreateNews() {
                   name="namaKomunitas"
                   value={formData.namaKomunitas}
                   onChange={handleInputChange}
-                  required
                   className="border rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Masukkan Nama Komunitas"
                 />
@@ -430,7 +486,7 @@ export default function CreateNews() {
                   <p className="text-red-600 text-sm">{errors.namaKomunitas}</p>
                 )}
               </div>
-            )}
+            </div>
 
             <div className="mb-5">
               <label className="block text-gray-600 font-medium mb-2">
@@ -584,9 +640,9 @@ export default function CreateNews() {
               className={`w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200  ${
                 !isFormValid ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              disabled={!isFormValid || loading}
+              disabled={!isFormValid || loadingSubmit}
             >
-              {loading ? "Menyimpan..." : "Buat Berita"}
+              {loadingSubmit ? "Menyimpan..." : "Buat Berita"}
             </button>
           </form>
         </main>

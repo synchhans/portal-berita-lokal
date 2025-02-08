@@ -1,7 +1,7 @@
-import { Schema } from "mongoose";
+import { ObjectId } from "mongoose";
 
 export interface UserRating {
-  userId: Schema.Types.ObjectId;
+  userId: ObjectId;
   stars: number;
 }
 

@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
     await connectToDB();
 
     const user = await authenticate(req);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
+    }
 
     const { title, content, image, location, category, tags, url } =
       await req.json();
@@ -51,19 +54,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const existingTitleCeo = await NewsModel.findOne({ title_seo });
-    if (existingTitleCeo) {
+    const existingTitleSeo = await NewsModel.findOne({ title_seo });
+    if (existingTitleSeo) {
       return NextResponse.json(
         { error: "Change the title of this news." },
         { status: 400 }
       );
     }
 
-    const moderationResponse = await fetch(`${process.env.BASE_URL_WEB}/api/news/moderate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
-    });
+    const moderationResponse = await fetch(
+      `${process.env.BASE_URL_WEB}/api/news/moderate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      }
+    );
 
     if (!moderationResponse.ok) {
       const errorBody = await moderationResponse.text();
@@ -76,7 +82,6 @@ export async function POST(req: NextRequest) {
 
     const moderationData = await moderationResponse.json();
     const isTextSafe = moderationData.isTextSafe;
-
     const status = isTextSafe ? "approved" : "pending";
 
     const newNews: News = new NewsModel({
@@ -98,7 +103,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error creating news:", error);
     const message =
-      (error as { message?: string }).message || "An error occurred";
-    return NextResponse.json({ message }, { status: 400 });
+      (error as { message?: string }).message || "An error occurred.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

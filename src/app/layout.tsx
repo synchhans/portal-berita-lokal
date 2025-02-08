@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Providers from "./Providers";
 
 const expletusSans = localFont({
   src: "./fonts/ExpletusSans.ttf",
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${expletusSans.variable} antialiased overflow-x-hidden`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

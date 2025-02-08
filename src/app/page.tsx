@@ -11,20 +11,25 @@ import AlertManager from "./components/AlertManager";
 
 export default function Home() {
   const { newsData, error, isLoading } = useFetchNews(
-    7,
+    10,
     "approved",
     "",
     "",
     "",
-    false
+    false,
+    "latest"
   );
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div>
+        Error: {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    );
   }
 
   const slides = newsData.slice(0, 5);
-  const cardsData = newsData.slice(5, 7);
+  const cardsData = newsData.slice(5, 10);
 
   return (
     <div className="w-full max-w-full">
@@ -32,7 +37,7 @@ export default function Home() {
       <AlertManager path="/" />
       <Header />
       {isLoading ? <SkeletonBanner /> : <Banner slides={slides} />}
-      <div className="flex justify-between my-5 items-center max-w-[900px] mx-auto">
+      <div className="flex justify-between my-5 items-center max-w-[900px] mx-3 lg:mx-auto">
         <div className="text-2xl w-[250px] font-bold">Berita Tren Terbaru</div>
         <div className="bg-secondary text-primary px-3 py-2 rounded-full hover:bg-primary hover:text-secondary cursor-pointer font-bold uppercase">
           terkini

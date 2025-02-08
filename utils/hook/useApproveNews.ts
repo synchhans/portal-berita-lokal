@@ -1,28 +1,29 @@
 import { useState } from "react";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { ObjectId } from "mongoose";
 
 const useApproveNews = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const changeNews = async (itemId: string, status: string) => {
+  const changeNews = async (itemId: ObjectId, status: string) => {
     setLoading(true);
     setError(null);
 
-    const token = Cookies.get("token");
-    if (!token) {
-      setError("Token not found. Please log in again.");
-      setLoading(false);
-      return;
-    }
+    // const token = Cookies.get("token");
+    // if (!token) {
+    //   setError("Token not found. Please log in again.");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
       const response = await fetch(`/api/news/status`, {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

@@ -32,30 +32,35 @@ const defaultLocation = {
 
 export async function POST(req: NextRequest) {
   try {
+    // Autentikasi pengguna
     const user = await authenticate(req);
-
     if (!user || (user.role !== "admin" && user.role !== "provider")) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 403 });
     }
 
+    // Pastikan koneksi ke database berhasil
     await connectToDB();
 
     const allArticles = [];
     const allTitles = new Set();
-
     for (const category of categories) {
       const url = `https://newsapi.org/v2/everything?q=${category}&language=${NEWSAPI_LANGUAGE}&apiKey=${NEWSAPI_API_KEY}`;
+      console.log(`Fetching articles for category: ${category}`);
+
       const response = await fetch(url);
+      if (!response.ok) {
+        console.warn(`Failed to fetch articles for category: ${category}`);
+        continue;
+      }
 
       const data = await response.json();
       if (!data.articles || !Array.isArray(data.articles)) {
-        console.warn(`Invalid articles data for category ${category}.`);
+        console.warn(`Invalid articles data for category: ${category}`);
         continue;
       }
 
       const categoryArticles = [];
       const allImages = new Set();
-
       for (const article of data.articles) {
         if (
           article.title &&
@@ -68,7 +73,6 @@ export async function POST(req: NextRequest) {
         ) {
           allTitles.add(article.title);
           allImages.add(article.urlToImage);
-
           categoryArticles.push({
             title: article.title,
             title_seo: formatForUrl(article.title),
@@ -89,10 +93,8 @@ export async function POST(req: NextRequest) {
             views: 0,
           });
         }
-
         if (categoryArticles.length >= 4) break;
       }
-
       allArticles.push(...categoryArticles);
     }
 
@@ -108,15 +110,16 @@ export async function POST(req: NextRequest) {
           },
         }))
       );
-
+      console.log(`${allArticles.length} news successfully saved to DB.`);
       return NextResponse.json(
         {
-          message: `${allArticles.length} news successfully saved to DB`,
+          message: `${allArticles.length} news successfully saved to DB.`,
           news: allArticles,
         },
         { status: 200 }
       );
     } else {
+      console.log("No new unique articles to save.");
       return NextResponse.json(
         { message: "No new unique articles to save." },
         { status: 200 }
@@ -125,7 +128,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error saving news to DB:", error);
     return NextResponse.json(
-      { error: "Error saving news to DB" },
+      { error: "An unexpected error occurred while saving news to DB." },
       { status: 500 }
     );
   }
@@ -133,10 +136,10 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { authorId } = await req.json();
-    if (!authorId) {
+    const { authorId: reqAuthorId } = await req.json();
+    if (!reqAuthorId) {
       return NextResponse.json(
-        { error: "Author ID is required" },
+        { error: "Author ID is required." },
         { status: 400 }
       );
     }
@@ -147,23 +150,25 @@ export async function DELETE(req: NextRequest) {
     }
 
     await connectToDB();
-    const result = await NewsModel.deleteMany({ author: authorId });
 
+    const result = await NewsModel.deleteMany({ author: reqAuthorId });
     if (result.deletedCount === 0) {
+      console.warn(`No news found for author ID: ${reqAuthorId}`);
       return NextResponse.json(
-        { error: "No news found for this author" },
+        { error: "No news found for this author." },
         { status: 404 }
       );
     }
 
+    console.log(`${result.deletedCount} news successfully deleted.`);
     return NextResponse.json(
-      { message: `${result.deletedCount} news successfully deleted` },
+      { message: `${result.deletedCount} news successfully deleted.` },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error delete news provider:", error);
+    console.error("Error deleting news provider:", error);
     return NextResponse.json(
-      { error: "Error delete news provider" },
+      { error: "An unexpected error occurred while deleting news." },
       { status: 500 }
     );
   }

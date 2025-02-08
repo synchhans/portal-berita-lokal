@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 
 interface AuthStatus {
   isAuthenticated: boolean;
@@ -15,23 +14,28 @@ export const useAuthStatus = (): AuthStatus => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       try {
-        const cookieData = Cookies.get("user_data");
-        if (cookieData) {
-          const parsedData = JSON.parse(cookieData);
-          const userRoleFromCookie = parsedData.role;
+        const response = await fetch("/api/auth");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to authenticate");
+        }
 
-          if (
-            userRoleFromCookie &&
-            ["user", "admin", "provider"].includes(userRoleFromCookie)
-          ) {
-            setUser({ role: userRoleFromCookie } as AuthenticatedUser);
-            setIsAuthenticated(true);
-          }
+        const data = await response.json();
+        const userData = data.user;
+
+        if (
+          userData.role &&
+          ["user", "admin", "provider"].includes(userData.role)
+        ) {
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else {
+          throw new Error("Invalid user role");
         }
       } catch (err) {
-        setError("Failed to parse user data");
+        setError((err as Error).message || "An error occurred");
       } finally {
         setLoading(false);
       }

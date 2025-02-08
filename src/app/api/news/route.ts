@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import NewsModel from "../../../../utils/model/News";
 import { connectToDB } from "../../../../utils/lib/mongoose";
-import { authenticate } from "../../../../utils/lib/authHelper";
+import { Types } from "mongoose";
+const { ObjectId } = Types;
+
+function toObjectId(str: string) {
+  if (!/^[a-fA-F0-9]{24}$/.test(str)) {
+    throw new Error("Invalid ObjectId format");
+  }
+  return new ObjectId(str);
+}
 
 export async function GET(req: NextRequest) {
   try {
     await connectToDB();
-
     const { searchParams } = req.nextUrl;
     const status = searchParams.get("status");
     const category = searchParams.get("category");
@@ -20,37 +27,66 @@ export async function GET(req: NextRequest) {
     const regency = searchParams.get("regency");
     const authorId = searchParams.get("authorId");
     const id = searchParams.get("id");
+    const sortBy = searchParams.get("sortBy") || "latest";
 
-    const query: Record<string, any> = {};
+    // Build the aggregation pipeline
+    const pipeline: any[] = [];
 
-    if (status) query.status = status;
-    if (category) query.category = { $regex: new RegExp(category, "i") };
-    if (title) {
-      query.title_seo = title;
+    // Match stage for filtering
+    const matchStage: Record<string, any> = {};
+    if (status) matchStage.status = status;
+    if (category) matchStage.category = { $regex: new RegExp(category, "i") };
+    if (title) matchStage.title_seo = title;
+    if (type) matchStage.type = type;
+    if (authorId || id) {
+      try {
+        if (authorId) {
+          matchStage.author = toObjectId(authorId);
+        } else if (id) {
+          matchStage._id = toObjectId(id);
+        } else {
+          throw new Error("Either 'authorId' or 'id' is required");
+        }
+      } catch (error) {
+        console.error("Error processing authorId or id:", error);
+        return NextResponse.json(
+          { error: "Invalid authorId or id format" },
+          { status: 400 }
+        );
+      }
     }
-    if (type) {
-      query.type = type;
-    }
-    if (authorId) query.author = authorId;
 
-    // if (district) {
-    //   query["location.district"] = district;
-    // }
-
-    // if (regency) {
-    //   query["location.regency"] = regency;
-    // }
-
-    if (id) {
-      query._id = id;
+    if (Object.keys(matchStage).length > 0) {
+      pipeline.push({ $match: matchStage });
     }
 
-    let newsQuery = NewsModel.find(query);
+    // Sort stage for ordering
+    const sortDirection = sortBy === "oldest" ? 1 : -1; // 1 for ascending, -1 for descending
+    pipeline.push({ $sort: { createdAt: sortDirection } });
 
-    if (limit > 0) newsQuery.limit(limit);
-    if (skip > 0) newsQuery.skip(skip);
+    // Skip and limit stages for pagination
+    if (skip > 0) pipeline.push({ $skip: skip });
+    if (limit > 0) pipeline.push({ $limit: limit });
 
-    const news = await newsQuery.exec();
+    // Projection stage to include only necessary fields
+    pipeline.push({
+      $project: {
+        _id: 1,
+        title: 1,
+        title_seo: 1,
+        content: 1,
+        category: 1,
+        status: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        author: 1,
+        location: 1,
+        image: 1,
+      },
+    });
+
+    // Execute the aggregation pipeline
+    const news = await NewsModel.aggregate(pipeline);
 
     if (news.length === 0) {
       return NextResponse.json({ message: "News not found" }, { status: 404 });
@@ -66,8 +102,6 @@ export async function GET(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await connectToDB();
-
-    const user = await authenticate(req);
 
     const { searchParams } = req.nextUrl;
     const id = searchParams.get("id");
@@ -96,8 +130,6 @@ export async function PATCH(req: NextRequest) {
   try {
     await connectToDB();
 
-    const user = await authenticate(req);
-
     const { id, category, title, title_seo, image, content } = await req.json();
 
     if (!id || !category || !title || !image || !content || !title_seo) {
@@ -110,6 +142,29 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
+    const moderationResponse = await fetch(
+      `${process.env.BASE_URL_WEB}/api/news/moderate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      }
+    );
+
+    if (!moderationResponse.ok) {
+      const errorBody = await moderationResponse.text();
+      console.error("Moderation API Error:", errorBody);
+      return NextResponse.json(
+        { error: "Failed to moderate content" },
+        { status: 500 }
+      );
+    }
+
+    const moderationData = await moderationResponse.json();
+    const isTextSafe = moderationData.isTextSafe;
+
+    const status = isTextSafe ? "approved" : "pending";
+
     const updatedNews = await NewsModel.findByIdAndUpdate(
       id,
       {
@@ -117,6 +172,7 @@ export async function PATCH(req: NextRequest) {
         title_seo,
         image,
         content,
+        status,
       },
       { new: true }
     );

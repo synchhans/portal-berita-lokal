@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 interface Location {
   lat: number;
@@ -32,17 +32,17 @@ const useSubmitNews = () => {
     setLoading(true);
 
     try {
-      const token = Cookies.get("token");
+      // const token = Cookies.get("token");
 
-      if (!token) {
-        throw new Error("Authorization token is missing.");
-      }
+      // if (!token) {
+      //   throw new Error("Authorization token is missing.");
+      // }
 
       const response = await fetch("/api/news/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -77,17 +77,17 @@ const useSubmitNews = () => {
     setLoading(true);
 
     try {
-      const token = Cookies.get("token");
+      // const token = Cookies.get("token");
 
-      if (!token) {
-        throw new Error("Authorization token is missing.");
-      }
+      // if (!token) {
+      //   throw new Error("Authorization token is missing.");
+      // }
 
       const response = await fetch("/api/news/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
