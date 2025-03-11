@@ -1,14 +1,23 @@
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../../../utils/hook/useAuth";
 import useFetchNews from "../../../../../utils/hook/useFetchNews";
-import { FiLogOut, FiPlus, FiUser } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiLogOut,
+  FiPlus,
+  FiUser,
+  FiXCircle,
+} from "react-icons/fi";
 import SkeletonCards from "../../skeleton/SkeletonCards";
 import Cards from "../../Cards";
+import useFetchNotif from "../../../../../utils/hook/useFetchNotif";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const pathname = usePathname();
   const { logout, isLoading: loading } = useAuth();
   const handleLogout = async () => {
@@ -22,6 +31,19 @@ const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
     "",
     user?.id
   );
+
+  const { notifications, isLoading: isNotifLoading } = useFetchNotif(user?.id!);
+
+  const notificationCount = notifications?.length || 0;
+
+  useEffect(() => {
+    if (dropdownOpen) {
+      setNotifOpen(false);
+    }
+    if (notifOpen) {
+      setDropdownOpen(false);
+    }
+  }, [dropdownOpen, notifOpen]);
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -109,11 +131,22 @@ const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
             </a>
           </div>
           <div className="relative">
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <span className="mr-2 text-gray-700 font-semibold">
+            <div className="flex items-center cursor-pointer">
+              <span
+                className="mr-5 relative"
+                onClick={() => setNotifOpen(!notifOpen)}
+              >
+                <IoMdNotificationsOutline className="w-8 h-8 text-gray-700 hover:text-blue-600 transition-colors duration-200" />
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {notificationCount}
+                  </span>
+                )}
+              </span>
+              <span
+                className="mr-2 text-gray-700 font-semibold cursor-pointer"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
                 {user?.name}
               </span>
               <img
@@ -125,7 +158,7 @@ const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
               />
             </div>
             {dropdownOpen && (
-              <div className="absolute right-0 mt-6 w-48 bg-white rounded-md shadow-lg">
+              <div className="absolute right-0 mt-6 w-48 bg-white rounded-md shadow-lg z-10">
                 <a
                   href="/profile"
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -139,6 +172,56 @@ const ApprovedUser: React.FC<DashboardProps> = ({ user }) => {
                   <FiLogOut className="mr-2" />
                   {loading ? "Logging out..." : "Logout"}
                 </button>
+              </div>
+            )}
+            {notifOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                <div className="p-4 flex items-center space-x-3 border-b border-gray-200">
+                  <IoMdNotificationsOutline className="text-gray-500 text-xl" />
+                  <span className="font-medium text-gray-800">Notifikasi</span>
+                </div>
+                <div className="max-h-60 overflow-y-auto">
+                  {notifications && notifications.length > 0 ? (
+                    notifications.map((notif) => (
+                      <div
+                        key={notif._id}
+                        className="p-4 hover:bg-gray-100 transition-colors duration-150 flex items-start space-x-3"
+                      >
+                        {notif.status === "approved" && (
+                          <FiCheckCircle className="text-green-500 text-lg mt-1" />
+                        )}
+                        {notif.status === "pending" && (
+                          <FiXCircle className="text-red-500 text-lg mt-1" />
+                        )}
+                        <div>
+                          <p className="text-sm text-gray-700">
+                            {notif.message}
+                          </p>
+                          <span
+                            className={`text-xs font-medium ${
+                              notif.status === "approved"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {notif.status.charAt(0).toUpperCase() +
+                              notif.status.slice(1)}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {new Date(notif.timestamp).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      <p>Belum ada notifikasi</p>
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 text-center">
+                  <p className="text-sm font-medium">Notifikasi</p>
+                </div>
               </div>
             )}
           </div>

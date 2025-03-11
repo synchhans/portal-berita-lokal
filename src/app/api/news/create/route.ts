@@ -4,6 +4,7 @@ import { connectToDB } from "../../../../../utils/lib/mongoose";
 import { authenticate } from "../../../../../utils/lib/authHelper";
 import { formatForUrl } from "../../../../../utils/format/url.format";
 import { News } from "../../../../../types/News";
+import NotificationModel from "../../../../../utils/model/Notification";
 
 export async function POST(req: NextRequest) {
   try {
@@ -99,6 +100,21 @@ export async function POST(req: NextRequest) {
     });
 
     await newNews.save();
+
+    const message =
+      status === "approved"
+        ? "Berita Anda telah disetujui."
+        : "Berita Anda ditolak karena melanggar, harap update konten!.";
+
+    const newNotification = new NotificationModel({
+      user_id: user.id,
+      status: status,
+      message: message,
+      timestamp: new Date(),
+    });
+
+    await newNotification.save();
+
     return NextResponse.json(newNews, { status: 201 });
   } catch (error) {
     console.error("Error creating news:", error);
