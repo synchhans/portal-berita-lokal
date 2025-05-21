@@ -1,5 +1,12 @@
 import React from "react";
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaGithub,
+  FaInstagram,
+  FaLinkedin,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 
 const Footer: React.FC = () => {
@@ -80,18 +87,23 @@ const Footer: React.FC = () => {
             <p className="text-lg font-semibold mb-4">Media Sosial</p>
             <ul className="flex space-x-4 mb-4">
               <li>
-                <a href="#" aria-label="Facebook" className="text-white">
-                  <FaFacebookF size={24} />
+                <a
+                  href="https://github.com/synchhans"
+                  target="_blank"
+                  aria-label="Github"
+                  className="text-white"
+                >
+                  <FaGithub size={24} />
                 </a>
               </li>
               <li>
-                <a href="#" aria-label="Twitter" className="text-white">
-                  <FaTwitter size={24} />
-                </a>
-              </li>
-              <li>
-                <a href="#" aria-label="LINE" className="text-white">
-                  <SiLine size={24} />
+                <a
+                  href="https://www.linkedin.com/in/muhamadfarhaninc"
+                  target="_blank"
+                  aria-label="LinkedIn"
+                  className="text-white"
+                >
+                  <FaLinkedin size={24} />
                 </a>
               </li>
               <li>
