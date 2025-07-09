@@ -26,7 +26,10 @@ export default function RootLayout({
         name="google-site-verification"
         content="g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8"
       />
-      <meta name="google-adsense-account" content="ca-pub-7686429509274648" />
+      <meta
+        name="google-adsense-account"
+        content="ca-pub-7686429509274648"
+      ></meta>
       <body
         className={`${expletusSans.variable} antialiased overflow-x-hidden`}
       >
