@@ -21,12 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <meta
-        name="google-site-verification"
-        content="g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8"
-      />
-      <meta name="google-adsense-account" content="ca-pub-7686429509274648" />
+    <html lang="id">
+      <head>
+        <meta
+          name="google-site-verification"
+          content="g1K9uwCjFYm6Emspt7Ch4BHgj7FLBnqOW-770w8_uP8"
+        />
+        <meta name="google-adsense-account" content="ca-pub-7686429509274648" />
+        <link rel="shortcut icon" href="logo.svg" type="image/x-icon" />
+      </head>
       <body
         className={`${expletusSans.variable} antialiased overflow-x-hidden`}
       >
